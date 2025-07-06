@@ -1,4 +1,4 @@
-name: CekrekinAja CI/CD
+name: CekrekinAja CI/CD (with MySQL)
 
 on:
   push:
@@ -9,17 +9,33 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    
+    # Membuat service container untuk database MySQL
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: laravel_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       # 1. Mengambil kode dari repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Menyiapkan lingkungan PHP
+      # 2. Menyiapkan lingkungan PHP dengan ekstensi MySQL
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: bcmath, ctype, curl, dom, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml
+          extensions: bcmath, ctype, curl, dom, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml, pdo_mysql
 
       # 3. Install dependensi Composer
       - name: Install Composer dependencies
@@ -39,29 +55,27 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
-      # 7. Setup Database
+      # 7. Setup Database dari file .sql ke MySQL Service
       - name: Setup Test Database
-        run: |
-          sudo apt-get update && sudo apt-get install -y sqlite3
-          touch database/database.sqlite
-          sqlite3 database/database.sqlite < database/db_CekrekinAja.sql
+        run: sudo apt-get install -y mysql-client && mysql -h 127.0.0.1 --port=${{ job.services.mysql.ports[3306] }} -u root -ppassword laravel_test < database/db_CekrekinAja.sql
 
-      # 8. Jalankan tes
+      # 8. Jalankan tes menggunakan koneksi MySQL
       - name: Run Pest/PHPUnit tests
         env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: ${{ job.services.mysql.ports[3306] }}
+          DB_DATABASE: laravel_test
+          DB_USERNAME: root
+          DB_PASSWORD: password
         run: php artisan test
 
   deploy:
-    # Hanya berjalan jika job 'test' berhasil
     needs: test
     runs-on: ubuntu-latest
-    # Hanya berjalan saat ada push ke branch 'main', bukan pull request
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
-      # 1. Melakukan deployment ke server
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -74,6 +88,7 @@ jobs:
             php artisan down
             git pull origin main
             composer install --no-dev --optimize-autoloader
+            php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
