@@ -44,7 +44,7 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y sqlite3
           touch database/database.sqlite
-          sqlite3 database/database.sqlite < db_CekrekinAja.sql
+          sqlite3 database/database.sqlite < database/db_CekrekinAja.sql
 
       # 8. Jalankan tes
       - name: Run Pest/PHPUnit tests
