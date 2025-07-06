@@ -17,15 +17,15 @@ class LoginTest extends TestCase
         // Create a valid user (Super Admin)
         try {
             $user = User::factory()->create([
-                'email' => 'momo@test.com',
-                'password' => bcrypt('momo'), // Correct password (hashed)
+                'email' => 'alifnur@test.com',
+                'password' => bcrypt('alifnur'), // Correct password (hashed)
                 'role' => 2, // Super Admin
             ]);
 
             // Send the login request with valid credentials
             $response = $this->post('/login', [
-                'email' => 'momo@test.com',
-                'password' => 'momo', // Correct password
+                'email' => 'alifnur@test.com',
+                'password' => 'alifnur', // Correct password
             ]);
 
             // Ensure the status is 302 (redirect)
@@ -88,7 +88,7 @@ class LoginTest extends TestCase
         try {
             // Send a request with only the email (no password)
             $response = $this->post('/login', [
-                'email' => 'momo@test.com',
+                'email' => 'dimas@test.com',
                 // No password sent
             ]);
 
@@ -108,13 +108,13 @@ class LoginTest extends TestCase
     try {
         // Buat pengguna dengan password yang benar
         $user = User::factory()->create([
-            'email' => 'mika@test.com',
-            'password' => bcrypt('mika'), // Correct password (hashed)
+            'email' => 'dimas@test.com',
+            'password' => bcrypt('dimas'), // Correct password (hashed)
         ]);
 
         // Kirimkan permintaan login dengan password yang salah
         $response = $this->post('/login', [
-            'email' => 'mika@test.com',
+            'email' => 'dimas@test.com',
             'password' => 'asdmkvd', // Incorrect password
         ]);
 
@@ -137,15 +137,15 @@ class LoginTest extends TestCase
         try {
             // Buat pengguna dengan email yang belum diverifikasi
             $user = User::factory()->create([
-                'email' => 'dora@test.com',
-                'password' => bcrypt('dora'),
+                'email' => 'dimas@test.com',
+                'password' => bcrypt('dimas'),
                 'email_verified_at' => null, // No verification date
             ]);
 
             // Kirimkan permintaan login dengan email yang belum diverifikasi
             $response = $this->post('/login', [
-                'email' => 'dora@test.com',
-                'password' => 'dora',
+                'email' => 'dimas@test.com',
+                'password' => 'dimas',
             ]);
 
             // Pastikan ada error untuk email yang belum diverifikasi
@@ -165,29 +165,29 @@ class LoginTest extends TestCase
         try {
             // Admin (role = 1)
             $admin = User::factory()->create([
-                'email' => 'awan@test.com',
-                'password' => bcrypt('awan'),
+                'email' => 'alifnur@test.com',
+                'password' => bcrypt('alifnur'),
                 'role' => 1
             ]);
 
             // Send login request as Admin
             $response = $this->post('/login', [
-                'email' => 'awan@test.com',
-                'password' => 'awan',
+                'email' => 'wahyu@test.com',
+                'password' => 'wahyu',
             ]);
             $response->assertRedirect(route('admin.index'));
 
             // Member (role = 0)
             $member = User::factory()->create([
-                'email' => 'oca@test.com',
-                'password' => bcrypt('oca'),
+                'email' => 'nufus@test.com',
+                'password' => bcrypt('nufus'),
                 'role' => 0
             ]);
 
             // Send login request as Member
             $response = $this->post('/login', [
-                'email' => 'oca@test.com',
-                'password' => 'oca',
+                'email' => 'dimas@test.com',
+                'password' => 'dimas',
             ]);
             $response->assertRedirect(route('member.index'));
         } catch (\Exception $e) {
