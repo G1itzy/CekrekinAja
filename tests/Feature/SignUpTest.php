@@ -15,9 +15,9 @@ class SignUpTest extends TestCase
     {
         // Data valid untuk pendaftaran
         $data = [
-            'email' => 'aslam@test.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
+            'email' => 'dimas@test.com',
+            'password' => 'dimas',
+            'password_confirmation' => 'dimas',
         ];
 
         // Kirim POST request untuk registrasi
