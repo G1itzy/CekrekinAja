@@ -1,0 +1,91 @@
+name: CekrekinAja CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Mengambil kode dari repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Menyiapkan lingkungan PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: bcmath, ctype, curl, dom, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml
+          coverage: none
+
+      # 3. Cache dependensi Composer
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      # 4. Install dependensi Composer
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      # 5. Cache dependensi Node.js
+      - name: Cache Node modules
+        id: npm-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      # 6. Install dependensi NPM dan build aset
+      - name: Install NPM dependencies and build assets
+        run: |
+          npm install
+          npm run prod
+
+      # 7. Siapkan file .env (SEBELUM key:generate)
+      - name: Prepare environment file
+        run: php -r "copy('.env.example', '.env');"
+
+      # 8. Generate application key
+      - name: Generate application key
+        run: php artisan key:generate
+
+      # 9. Jalankan tes
+      - name: Run Pest/PHPUnit tests
+        run: php artisan test
+
+  deploy:
+    # Hanya berjalan jika job 'test' berhasil
+    needs: test
+    runs-on: ubuntu-latest
+    # Hanya berjalan saat ada push ke branch 'main', bukan pull request
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      # 1. Melakukan deployment ke server
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            php artisan down
+            git pull origin main
+            composer install --no-dev --optimize-autoloader
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan up
