@@ -61,10 +61,6 @@ jobs:
         run: php artisan key:generate
 
       # 9. Jalankan tes
-      - name: Setup Test Database
-        run: |
-          php artisan migrate --force
-
       - name: Run Pest/PHPUnit tests
         env:
           DB_CONNECTION: sqlite
