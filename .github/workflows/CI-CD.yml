@@ -1,4 +1,4 @@
-name: CekrekinAja CI/CD 
+name: CekrekinAja CI/CD
 
 on:
   push:
@@ -7,50 +7,59 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # Job untuk menjalankan build dan tes dasar (tanpa database)
   test:
     runs-on: ubuntu-latest
     steps:
-      # 1. Checkout kode dari repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Setup PHP
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2' # Sesuaikan dengan versi PHP Anda
+          php-version: '8.2'
           extensions: bcmath, ctype, curl, dom, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml
           coverage: none
 
-      # 3. Install dependensi Composer
+      # 💡 Menambahkan Cache untuk dependensi Composer
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
-      # 4. Siapkan file .env
-      - name: Prepare environment file
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      # 💡 Menambahkan Cache untuk dependensi NPM
+      - name: Cache Node modules
+        id: npm-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
 
-      # 5. Generate application key
-      - name: Generate app key
-        run: php artisan key:generate
-      
-      # 6. Install dependensi NPM & build assets
       - name: Install NPM dependencies and build assets
         run: |
           npm install
           npm run build
+      
+      - name: Prepare environment file
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-      # 7. Jalankan tes (tanpa koneksi database)
+      - name: Generate application key
+        run: php artisan key:generate
+
       - name: Run Pest/PHPUnit tests
         run: php artisan test
 
-  # Job untuk mendeploy aplikasi
   deploy:
-    # Hanya berjalan jika job 'test' berhasil
     needs: test
     runs-on: ubuntu-latest
-    # Hanya berjalan saat ada push ke branch 'main'
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
@@ -62,21 +71,17 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            # Masuk ke direktori proyek di server
             cd ${{ secrets.DEPLOY_PATH }}
-            
-            # Aktifkan mode maintenance
             php artisan down
-            
-            # Tarik perubahan terbaru dari branch main
             git pull origin main
-            
-            # Install dependensi composer untuk production
             composer install --no-dev --optimize-autoloader
             
-            # Bersihkan dan buat cache baru untuk optimasi
-            php artisan optimize:clear
-            php artisan optimize
+          
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
             
-            # Nonaktifkan mode maintenance
+            # (Opsional) Atur perizinan file jika sering terjadi error permission
+            # chown -R www-data:www-data storage bootstrap/cache
+            
             php artisan up
