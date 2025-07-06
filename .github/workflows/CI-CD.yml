@@ -46,7 +46,7 @@ jobs:
       - name: Install NPM dependencies and build assets
         run: |
           npm install
-          npm run build
+          npm run prod
       
       - name: Prepare environment file
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
