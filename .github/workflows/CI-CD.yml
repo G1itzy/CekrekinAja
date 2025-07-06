@@ -1,0 +1,82 @@
+name: CekrekinAja CI/CD 
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # Job untuk menjalankan build dan tes dasar (tanpa database)
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout kode dari repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Setup PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # Sesuaikan dengan versi PHP Anda
+          extensions: bcmath, ctype, curl, dom, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml
+          coverage: none
+
+      # 3. Install dependensi Composer
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      # 4. Siapkan file .env
+      - name: Prepare environment file
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      # 5. Generate application key
+      - name: Generate app key
+        run: php artisan key:generate
+      
+      # 6. Install dependensi NPM & build assets
+      - name: Install NPM dependencies and build assets
+        run: |
+          npm install
+          npm run build
+
+      # 7. Jalankan tes (tanpa koneksi database)
+      - name: Run Pest/PHPUnit tests
+        run: php artisan test
+
+  # Job untuk mendeploy aplikasi
+  deploy:
+    # Hanya berjalan jika job 'test' berhasil
+    needs: test
+    runs-on: ubuntu-latest
+    # Hanya berjalan saat ada push ke branch 'main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            # Masuk ke direktori proyek di server
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            # Aktifkan mode maintenance
+            php artisan down
+            
+            # Tarik perubahan terbaru dari branch main
+            git pull origin main
+            
+            # Install dependensi composer untuk production
+            composer install --no-dev --optimize-autoloader
+            
+            # Bersihkan dan buat cache baru untuk optimasi
+            php artisan optimize:clear
+            php artisan optimize
+            
+            # Nonaktifkan mode maintenance
+            php artisan up
