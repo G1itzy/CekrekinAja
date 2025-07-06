@@ -1,0 +1,25 @@
+[03-Jul-2025 03:54:31 Asia/Jakarta] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.2.0". You are running 8.1.32. in /home/xukxmbxe/public_html/vendor/composer/platform_check.php on line 24
+[03-Jul-2025 06:59:46 Asia/Jakarta] PHP Warning:  require(/home/xukxmbxe/public_html/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 06:59:46 Asia/Jakarta] PHP Warning:  require(/home/xukxmbxe/public_html/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 06:59:46 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required '/home/xukxmbxe/public_html/../vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/xukxmbxe/public_html/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 07:00:23 Asia/Jakarta] PHP Warning:  require(/home/xukxmbxe/public_html/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 07:00:23 Asia/Jakarta] PHP Warning:  require(/home/xukxmbxe/public_html/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 07:00:23 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required '/home/xukxmbxe/public_html/../vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/xukxmbxe/public_html/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 07:00:23 Asia/Jakarta] PHP Warning:  require(/home/xukxmbxe/public_html/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 07:00:23 Asia/Jakarta] PHP Warning:  require(/home/xukxmbxe/public_html/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 07:00:23 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required '/home/xukxmbxe/public_html/../vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/xukxmbxe/public_html/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 07:00:30 Asia/Jakarta] PHP Warning:  require(/home/xukxmbxe/public_html/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 07:00:30 Asia/Jakarta] PHP Warning:  require(/home/xukxmbxe/public_html/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/xukxmbxe/public_html/index.php on line 34
+[03-Jul-2025 07:00:30 Asia/Jakarta] PHP Fatal error:  Uncaught Error: Failed opening required '/home/xukxmbxe/public_html/../vendor/autoload.php' (include_path='.:/opt/alt/php82/usr/share/pear:/opt/alt/php82/usr/share/php:/usr/share/pear:/usr/share/php') in /home/xukxmbxe/public_html/index.php:34
+Stack trace:
+#0 {main}
+  thrown in /home/xukxmbxe/public_html/index.php on line 34
