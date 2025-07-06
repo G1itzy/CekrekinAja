@@ -68,7 +68,7 @@ jobs:
           DB_DATABASE: laravel_test
           DB_USERNAME: root
           DB_PASSWORD: password
-        #run: php artisan test
+        run: php artisan test
 
   deploy:
     runs-on: ubuntu-latest
