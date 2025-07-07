@@ -51,11 +51,11 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH private key
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH private key from GitHub secrets
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # If using passphrase
-          port: 22  # SSH port, default is 22
+          port: 22  # Ensure this matches your server's SSH port
           script: |
-            echo "PORT: ${{ secrets.PORT }}"  # Debugging
+            echo "PORT: 22"  # Debugging
             # Test SSH connection
             nc -zv ${{ secrets.HOST }} 22 || exit 1  # Will fail the job if connection can't be established
             
