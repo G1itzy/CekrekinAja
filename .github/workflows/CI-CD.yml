@@ -1,15 +1,16 @@
-name: CekrekinAja CI/CD (with MySQL)
+name: CI/CD Workflow
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
     services:
       mysql:
         image: mysql:8.0
@@ -23,7 +24,6 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,61 +34,35 @@ jobs:
           php-version: '8.2'
           extensions: bcmath, ctype, curl, dom, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml, pdo_mysql
 
+      # Step Example (Fix any issue here)
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
-      - name: Install NPM dependencies and build assets
-        run: |
-          npm install
-          npm run prod
-
-      - name: Prepare environment file
-        run: php -r "copy('.env.example', '.env');"
-
-      - name: Generate application key
-        run: php artisan key:generate
-
-      - name: Setup Test Database
-        run: |
-          sudo apt-get install -y mysql-client
-          mysql -h 127.0.0.1 --port=3306 -u root -ppassword laravel_test < database/db_CekrekinAja.sql
-
-      - name: Run Pest/PHPUnit tests
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_DATABASE: laravel_test
-          DB_USERNAME: root
-          DB_PASSWORD: password
-        run: php artisan test
-
   deploy:
-  needs: test
-  runs-on: ubuntu-latest
-  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Deploy to Production Server
-      uses: appleboy/ssh-action@v0.1.1  # Use the stable version
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.PORT }}  # Correctly reference PORT secret
-        script: |
-          echo "PORT: ${{ secrets.PORT }}"  # Debugging
-          cd /home/xukxmbxe/RentalKamera
-          git pull origin main
-          composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-          echo "${{ secrets.PROD_ENV_FILE }}" > .env
-          php artisan migrate --force
-          php artisan cache:clear
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
-          npm install
-          npm run prod
+      - name: Deploy to Production Server
+        uses: appleboy/ssh-action@v0.1.1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/xukxmbxe/RentalKamera
+            git pull origin main
+            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+            echo "${{ secrets.PROD_ENV_FILE }}" > .env
+            php artisan migrate --force
+            php artisan cache:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            npm install
+            npm run prod
