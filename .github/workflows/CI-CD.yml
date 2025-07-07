@@ -45,34 +45,34 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-  
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Deploy to Production Server
         uses: appleboy/ssh-action@v0.1.1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Kunci SSH dari GitHub secrets
-          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
           port: 5451 # Port SSH yang benar
           script: |
-            echo "PORT: 5451"  # Debugging
-            # Uji koneksi SSH
-            nc -zv ${{ secrets.SSH_HOST }} 22 || exit 1  # Akan gagal jika koneksi tidak berhasil
+            echo "Testing SSH connection..."  # Debugging
+            # Uji koneksi SSH ke server untuk memastikan port 22 terbuka
+            nc -zv ${{ secrets.SSH_HOST }} 22 || exit 1  # Gagal jika koneksi tidak berhasil
 
-            
-            echo "Koneksi SSH berhasil. Memulai deployment..."
-  
+            echo "SSH connection successful. Starting deployment..."
+
             # Langkah-langkah deployment utama
             cd /home/xukxmbxe/RentalKamera
-            git pull origin main
-            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-            echo "${{ secrets.PROD_ENV_FILE }}" > .env
-            php artisan migrate --force
-            php artisan cache:clear
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            npm install
-            npm run prod
-  
-    
+            git pull origin main  # Menarik perubahan terbaru dari repo utama
+            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev  # Instal dependensi composer
+            echo "${{ secrets.PROD_ENV_FILE }}" > .env  # Pastikan file .env diisi dengan data yang benar
+            php artisan migrate --force  # Menjalankan migrasi database
+            php artisan cache:clear  # Membersihkan cache aplikasi
+            php artisan config:cache  # Meng-cache konfigurasi aplikasi
+            php artisan route:cache  # Meng-cache rute aplikasi
+            php artisan view:cache  # Meng-cache tampilan aplikasi
+            npm install  # Install dependensi npm
+            npm run prod  # Membuat build produksi
