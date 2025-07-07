@@ -73,3 +73,4 @@ jobs:
             php artisan view:cache  # Meng-cache tampilan aplikasi
             npm install  # Install dependensi npm
             npm run prod  # Membuat build produksi
+
