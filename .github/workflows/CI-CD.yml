@@ -52,9 +52,10 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Kunci SSH dari GitHub secrets
-          port: 2082  # Port SSH yang benar
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
+          port: 2086  # Port SSH yang benar
           script: |
-            echo "PORT: 22"  # Debugging
+            echo "PORT: 2086"  # Debugging
             # Uji koneksi SSH
             nc -zv ${{ secrets.SSH_HOST }} 22 || exit 1  # Akan gagal jika koneksi tidak berhasil
             
