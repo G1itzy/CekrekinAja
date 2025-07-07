@@ -55,7 +55,7 @@ jobs:
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
           port: 5451 # Port SSH yang benar
           script: |
-            echo "PORT: 2086"  # Debugging
+            echo "PORT: 5451"  # Debugging
             # Uji koneksi SSH
             nc -zv ${{ secrets.SSH_HOST }} 22 || exit 1  # Akan gagal jika koneksi tidak berhasil
 
