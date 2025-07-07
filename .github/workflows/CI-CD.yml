@@ -46,17 +46,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup SSH
+      - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Kunci pribadi SSH
+          ssh-passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Passphrase SSH (pastikan ada di GitHub Secrets)
 
       - name: Deploy to Production Server
         uses: appleboy/ssh-action@v0.1.1
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          port: 5451 # Port SSH yang benar
+          host: ${{ secrets.SSH_HOST }}  # Host SSH server (pastikan ada di GitHub Secrets)
+          username: ${{ secrets.SSH_USERNAME }}  # Username SSH server
+          port: 5451  # Port SSH (pastikan benar)
           script: |
             echo "Testing SSH connection..."  # Debugging
             # Uji koneksi SSH ke server untuk memastikan port 22 terbuka
