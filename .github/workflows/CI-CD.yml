@@ -1,94 +1,73 @@
-name: CekrekinAja CI/CD (with MySQL)
+name: Run PHPUnit Tests
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Choose which test suite to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - 'all'
+          - 'feature'
+          - 'unit'
+      test_filter:
+        description: 'Optional: Filter tests by name (e.g., ForgotPasswordTest, login)'
+        required: false
+        type: string
+      specific_test_file:
+        description: 'Optional: Path to a specific test file (e.g., tests/Feature/LoginTest.php)'
+        required: false
+        type: string
 
 jobs:
-  test:
+  run-tests:
     runs-on: ubuntu-latest
-    
-    # Membuat service container untuk database MySQL
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: laravel_test
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
 
     steps:
-      # 1. Mengambil kode dari repository
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      # 2. Menyiapkan lingkungan PHP dengan ekstensi MySQL
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: bcmath, ctype, curl, dom, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml, pdo_mysql
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2' # Or your desired PHP version
+        extensions: mbstring, pdo_mysql, dom, gd, xml # Add any necessary extensions
+        ini-values: post_max_size=256M, upload_max_filesize=256M
+        tools: composer:v2
 
-      # 3. Install dependensi Composer
-      - name: Install Composer dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+    - name: Install Dependencies
+      run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      # 4. Install dependensi NPM dan build aset
-      - name: Install NPM dependencies and build assets
-        run: |
-          npm install
-          npm run prod
+    - name: Prepare Laravel Environment (if applicable)
+      run: |
+        cp .env.example .env
+        php artisan key:generate
+        # If you have a database, you might need to set it up here, e.g.:
+        # php artisan migrate --seed --env=testing
 
-      # 5. Siapkan file .env
-      - name: Prepare environment file
-        run: php -r "copy('.env.example', '.env');"
+    - name: Determine PHPUnit Command
+      id: phpunit_command
+      run: |
+        TEST_COMMAND="vendor/bin/phpunit"
 
-      # 6. Generate application key
-      - name: Generate application key
-        run: php artisan key:generate
+        if [ "${{ github.event.inputs.test_suite }}" == "feature" ]; then
+          TEST_COMMAND="$TEST_COMMAND tests/Feature"
+        elif [ "${{ github.event.inputs.test_suite }}" == "unit" ]; then
+          TEST_COMMAND="$TEST_COMMAND tests/Unit"
+        fi
 
-      # 7. Setup Database dari file .sql ke MySQL Service
-      - name: Setup Test Database
-        run: sudo apt-get install -y mysql-client && mysql -h 127.0.0.1 --port=${{ job.services.mysql.ports[3306] }} -u root -ppassword laravel_test < database/db_CekrekinAja.sql
+        if [ -n "${{ github.event.inputs.test_filter }}" ]; then
+          TEST_COMMAND="$TEST_COMMAND --filter '${{ github.event.inputs.test_filter }}'"
+        fi
 
-      # 8. Jalankan tes menggunakan koneksi MySQL
-      - name: Run Pest/PHPUnit tests
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: 127.0.0.1
-          DB_PORT: ${{ job.services.mysql.ports[3306] }}
-          DB_DATABASE: laravel_test
-          DB_USERNAME: root
-          DB_PASSWORD: password
-        run: php artisan test
+        if [ -n "${{ github.event.inputs.specific_test_file }}" ]; then
+          # If a specific file is provided, it overrides suite and filter
+          TEST_COMMAND="vendor/bin/phpunit ${{ github.event.inputs.specific_test_file }}"
+        fi
 
-  #deploy:
-   # runs-on: ubuntu-latest
-    #if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
-    #steps:
-    #  - name: Deploy to server
-    #    uses: appleboy/ssh-action@v1.0.3
-    #    with:
-    #      host: ${{ secrets.SSH_HOST }}
-    #     username: ${{ secrets.SSH_USERNAME }}
-     #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-     #     port: ${{ secrets.SSH_PORT }}
-     #     script: |
-      #      cd ${{ secrets.DEPLOY_PATH }}
-      #      php artisan down
-     #       git pull origin main
-     #       composer install --no-dev --optimize-autoloader
-     #       php artisan migrate --force
-      #      php artisan config:cache
-     #       php artisan route:cache
-     #       php artisan view:cache
-    #        php artisan up
+        echo "phpunit_command=$TEST_COMMAND" >> $GITHUB_OUTPUT
+
+    - name: Run PHPUnit Tests
+      run: ${{ steps.phpunit_command.outputs.phpunit_command }}
