@@ -53,7 +53,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Kunci SSH dari GitHub secrets
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
-          port: 22  # Port SSH yang benar
+          port: 443  # Port SSH yang benar
           script: |
             echo "PORT: 2086"  # Debugging
             # Uji koneksi SSH
