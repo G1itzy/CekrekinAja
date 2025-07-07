@@ -131,10 +131,10 @@ class LoginTest extends TestCase
 
 
 
-        public function testLoginRedirectsBasedOnRole()
-        {
+    public function testLoginRedirectsBasedOnRole()
+    {
         echo "Login berdasarkan role diuji.\n";
-    
+
         try {
             // Admin (role = 1)
             $admin = User::factory()->create([
@@ -142,30 +142,27 @@ class LoginTest extends TestCase
                 'password' => bcrypt('awan'),
                 'role' => 1
             ]);
-    
+
             // Send login request as Admin
             $response = $this->post('/login', [
                 'email' => 'awan@test.com',
                 'password' => 'awan',
             ]);
-            // TAMBAHKAN TITIK KOMA DI SINI
             $response->assertRedirect(route('admin.index'));
-    
+
             // Member (role = 0)
             $member = User::factory()->create([
                 'email' => 'oca@test.com',
                 'password' => bcrypt('oca'),
                 'role' => 0
             ]);
-    
+
             // Send login request as Member
             $response = $this->post('/login', [
                 'email' => 'oca@test.com',
                 'password' => 'oca',
             ]);
-            // TAMBAHKAN TITIK KOMA DI SINI
             $response->assertRedirect(route('member.index'));
-            
         } catch (\Exception $e) {
             echo "Error during login based on role: " . $e->getMessage() . "\n";
             throw $e; // Rethrow the exception to ensure the test fails if needed
