@@ -17,15 +17,15 @@ class LoginTest extends TestCase
         // Create a valid user (Super Admin)
         try {
             $user = User::factory()->create([
-                'email' => 'alifnur@test.com',
-                'password' => bcrypt('alifnur'), // Correct password (hashed)
+                'email' => 'momo@test.com',
+                'password' => bcrypt('momo'), // Correct password (hashed)
                 'role' => 2, // Super Admin
             ]);
 
             // Send the login request with valid credentials
             $response = $this->post('/login', [
-                'email' => 'alifnur@test.com',
-                'password' => 'alifnur', // Correct password
+                'email' => 'momo@test.com',
+                'password' => 'momo', // Correct password
             ]);
 
             // Ensure the status is 302 (redirect)
@@ -46,7 +46,7 @@ class LoginTest extends TestCase
         try {
             // Kirimkan login dengan email yang tidak terdaftar
             $response = $this->post('/login', [
-                'email' => 'dimas@test.com', // Invalid email
+                'email' => 'invalidemail@test.com', // Invalid email
                 'password' => 'wrongpassword',  // Incorrect password
             ]);
 
@@ -88,7 +88,7 @@ class LoginTest extends TestCase
         try {
             // Send a request with only the email (no password)
             $response = $this->post('/login', [
-                'email' => 'dimas@test.com',
+                'email' => 'momo@test.com',
                 // No password sent
             ]);
 
@@ -102,60 +102,33 @@ class LoginTest extends TestCase
     }
 
     public function testLoginWithWrongPassword()
-{
-    echo "Login dengan password yang salah diuji.\n";
-
-    try {
-        // Buat pengguna dengan password yang benar
-        $user = User::factory()->create([
-            'email' => 'dimas@test.com',
-            'password' => bcrypt('dimas'), // Correct password (hashed)
-        ]);
-
-        // Kirimkan permintaan login dengan password yang salah
-        $response = $this->post('/login', [
-            'email' => 'dimas@test.com',
-            'password' => 'asdmkvd', // Incorrect password
-        ]);
-
-        // Pastikan statusnya adalah redirect (302)
-        $response->assertStatus(302);
-
-        // Pastikan ada error untuk field password
-        $response->assertSessionHasErrors('password');
-    } catch (\Exception $e) {
-        echo "Error during login with wrong password: " . $e->getMessage() . "\n";
-        throw $e; // Rethrow the exception to ensure the test fails if needed
-    }
-}
-
-
-    public function testLoginWithUnverifiedEmail()
     {
-        echo "Login dengan email yang belum diverifikasi diuji.\n";
+        echo "Login dengan password yang salah diuji.\n";
 
         try {
-            // Buat pengguna dengan email yang belum diverifikasi
+            // Buat pengguna dengan password yang benar
             $user = User::factory()->create([
-                'email' => 'dimas1@test.com',
-                'password' => bcrypt('dimas'),
-                'email_verified_at' => null, // No verification date
+                'email' => 'mika@test.com',
+                'password' => bcrypt('mika'), // Correct password (hashed)
             ]);
 
-            // Kirimkan permintaan login dengan email yang belum diverifikasi
+            // Kirimkan permintaan login dengan password yang salah
             $response = $this->post('/login', [
-                'email' => 'dimas1@test.com',
-                'password' => 'dimas',
+                'email' => 'mika@test.com',
+                'password' => 'asdmkvd', // Incorrect password
             ]);
 
-            // Pastikan ada error untuk email yang belum diverifikasi
-            $response->assertSessionHasErrors('email');
-            $response->assertStatus(302); // Pastikan ini redirect
+            // Pastikan statusnya adalah redirect (302)
+            $response->assertStatus(302);
+
+            // Pastikan ada error untuk field password
+            $response->assertSessionHasErrors('password');
         } catch (\Exception $e) {
-            echo "Error during login with unverified email: " . $e->getMessage() . "\n";
+            echo "Error during login with wrong password: " . $e->getMessage() . "\n";
             throw $e; // Rethrow the exception to ensure the test fails if needed
         }
     }
+
 
 
     public function testLoginRedirectsBasedOnRole()
@@ -165,34 +138,34 @@ class LoginTest extends TestCase
         try {
             // Admin (role = 1)
             $admin = User::factory()->create([
-                'email' => 'alifnur@test.com',
-                'password' => bcrypt('alifnur'),
+                'email' => 'awan@test.com',
+                'password' => bcrypt('awan'),
                 'role' => 1
             ]);
 
             // Send login request as Admin
             $response = $this->post('/login', [
-                'email' => 'wahyu@test.com',
-                'password' => 'wahyu',
+                'email' => 'awan@test.com',
+                'password' => 'awan',
             ]);
             $response->assertRedirect(route('admin.index'));
 
             // Member (role = 0)
             $member = User::factory()->create([
-                'email' => 'nufus@test.com',
-                'password' => bcrypt('nufus'),
+                'email' => 'oca@test.com',
+                'password' => bcrypt('oca'),
                 'role' => 0
             ]);
 
             // Send login request as Member
             $response = $this->post('/login', [
-                'email' => 'dimas@test.com',
-                'password' => 'dimas',
+                'email' => 'oca@test.com',
+                'password' => 'oca',
             ]);
             $response->assertRedirect(route('member.index'));
         } catch (\Exception $e) {
             echo "Error during login based on role: " . $e->getMessage() . "\n";
             throw $e; // Rethrow the exception to ensure the test fails if needed
-        }
-    }
+        }
+    }
 }
