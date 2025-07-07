@@ -52,7 +52,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH private key from GitHub secrets
-          port: ${{ secrets.SSH_PORT}} # Ensure this matches your server's SSH port
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Passphrase for SSH key
+          port: ${{ secrets.SSH_PORT }}  # SSH port, default is 22
           script: |
             echo "PORT: 22"  # Debugging
             # Test SSH connection
