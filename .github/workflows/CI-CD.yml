@@ -77,11 +77,11 @@ jobs:
     steps:
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+       # with:
+       #   host: ${{ secrets.SSH_HOST }}
+       #   username: ${{ secrets.SSH_USERNAME }}
+       #   key: ${{ secrets.SSH_PRIVATE_KEY }}
+       #   port: ${{ secrets.SSH_PORT }}
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
             php artisan down
