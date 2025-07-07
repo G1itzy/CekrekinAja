@@ -39,30 +39,35 @@ jobs:
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
   deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  needs: test
+  runs-on: ubuntu-latest
+  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Deploy to Production Server
-        uses: appleboy/ssh-action@v0.1.1
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd /home/xukxmbxe/RentalKamera
-            git pull origin main
-            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-            echo "${{ secrets.PROD_ENV_FILE }}" > .env
-            php artisan migrate --force
-            php artisan cache:clear
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+    - name: Deploy to Production Server
+      uses: appleboy/ssh-action@v0.1.1
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Add if using passphrase
+        port: ${{ secrets.PORT }}  # SSH port, default is 22
+        script: |
+          echo "PORT: ${{ secrets.PORT }}"  # Debugging
+          cd /home/xukxmbxe/RentalKamera
+          git pull origin main
+          composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+          echo "${{ secrets.PROD_ENV_FILE }}" > .env
+          php artisan migrate --force
+          php artisan cache:clear
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          npm install
+          npm run prod
+
             npm install
             npm run prod
