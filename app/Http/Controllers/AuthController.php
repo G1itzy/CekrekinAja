@@ -17,21 +17,20 @@ class AuthController extends Controller
     {
         // Validasi input login
         $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required'
-    ], [
-        'email.required' => 'Silakan isi email.',
-        'email.email' => 'Format email tidak valid.',
-        'password.required' => 'Silakan isi password.'
-    ]);
-
+            'email' => 'required|email',
+            'password' => 'required'
+        ], [
+            'email.required' => 'Silakan isi email.',
+            'email.email' => 'Format email tidak valid.',
+            'password.required' => 'Silakan isi password.'
+        ]);
 
         // Cek apakah email terdaftar
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$user) {
-            // Email tidak ditemukan → tidak masuk hitungan percobaan
-            return back()->with('error', 'Email tidak terdaftar.');
+            // Email tidak ditemukan
+            return back()->withErrors(['email' => 'Email tidak terdaftar.']);
         }
 
         // Ambil percobaan login dari session berdasarkan email
@@ -41,7 +40,7 @@ class AuthController extends Controller
         // Cek apakah user diblokir
         if ($blockedUntil && now()->lt($blockedUntil)) {
             $remaining = $blockedUntil->diffInMinutes(now());
-            return back()->with('error', "Login diblokir untuk email ini. Silakan coba lagi setelah $remaining menit.");
+            return back()->withErrors(['email' => "Login diblokir untuk email ini. Silakan coba lagi setelah $remaining menit."]);
         }
 
         // Coba autentikasi
@@ -66,11 +65,12 @@ class AuthController extends Controller
         if ($attempts + 1 >= 3) {
             // Blokir user selama 5 menit
             session()->put('blocked_until_' . $user->id, now()->addMinutes(5));
-            return back()->with('error', 'Anda telah salah memasukkan password 3 kali. Email ini diblokir selama 5 menit.');
+            return back()->withErrors(['password' => 'Anda telah salah memasukkan password 3 kali. Email ini diblokir selama 5 menit.']);
         }
 
-        return back()->with('error', 'Password salah. Percobaan login: ' . ($attempts + 1) . '/3');
+        return back()->withErrors(['password' => 'Password salah. Percobaan login: ' . ($attempts + 1) . '/3']);
     }
+
 
     public function logout(Request $request)
     {
@@ -86,5 +86,5 @@ class AuthController extends Controller
         }
 
         return redirect('/');
-    }
+    }
 }
