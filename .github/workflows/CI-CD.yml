@@ -58,6 +58,7 @@ jobs:
             echo "PORT: 2086"  # Debugging
             # Uji koneksi SSH
             nc -zv ${{ secrets.SSH_HOST }} 22 || exit 1  # Akan gagal jika koneksi tidak berhasil
+
             
             echo "Koneksi SSH berhasil. Memulai deployment..."
   
