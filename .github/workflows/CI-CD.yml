@@ -45,20 +45,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+  
       - name: Deploy to Production Server
         uses: appleboy/ssh-action@v0.1.1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH private key from GitHub secrets
-          port: 80  # SSH port, default is 22
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Kunci SSH dari GitHub secrets
+          port: 22  # Gunakan port SSH yang benar
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Passphrase untuk kunci SSH jika ada
           script: |
             echo "PORT: 22"  # Debugging
-            # Test SSH connection
-            nc -zv ${{ secrets.HOST }} 22 || exit 1  # Will fail the job if connection can't be established
+            # Uji koneksi SSH
+            nc -zv ${{ secrets.SSH_HOST }} 22 || exit 1  # Akan gagal jika koneksi tidak berhasil
             
-            # Main deployment steps
+            echo "Koneksi SSH berhasil. Memulai deployment..."
+  
+            # Langkah-langkah deployment utama
             cd /home/xukxmbxe/RentalKamera
             git pull origin main
             composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
@@ -70,3 +73,4 @@ jobs:
             php artisan view:cache
             npm install
             npm run prod
+  
