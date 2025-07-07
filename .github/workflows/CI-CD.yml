@@ -49,11 +49,10 @@ jobs:
       - name: Deploy to Production Server
         uses: appleboy/ssh-action@v0.1.1
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH private key from GitHub secrets
-          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Passphrase for SSH key
-          port: 22  # Ensure this matches your server's SSH port
+          port: ${{ secrets.SSH_PORT}} # Ensure this matches your server's SSH port
           script: |
             echo "PORT: 22"  # Debugging
             # Test SSH connection
