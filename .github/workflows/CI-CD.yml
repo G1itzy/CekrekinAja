@@ -64,30 +64,31 @@ jobs:
         run: php artisan test
 
   deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  needs: test
+  runs-on: ubuntu-latest
+  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Deploy to Production Server
-        uses: appleboy/ssh-action@v0.1.1
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Use the SSH private key for authentication
-          port: ${{ secrets.PORT }}
-          script: |
-            cd /home/xukxmbxe/RentalKamera
-            git pull origin main
-            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-            echo "${{ secrets.PROD_ENV_FILE }}" > .env
-            php artisan migrate --force
-            php artisan cache:clear
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            npm install
-            npm run prod
+    - name: Deploy to Production Server
+      uses: appleboy/ssh-action@v0.1.1  # Use the stable version
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}  # Correctly reference PORT secret
+        script: |
+          echo "PORT: ${{ secrets.PORT }}"  # Debugging
+          cd /home/xukxmbxe/RentalKamera
+          git pull origin main
+          composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+          echo "${{ secrets.PROD_ENV_FILE }}" > .env
+          php artisan migrate --force
+          php artisan cache:clear
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          npm install
+          npm run prod
