@@ -70,6 +70,47 @@ jobs:
           DB_PASSWORD: password
         run: php artisan test
         run: npm ci
-        run: npm run build
-        run: npm run deploy
+
+
+      deploy:
+    needs: test # <-- Menunggu job 'test' selesai
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # <-- Hanya jalan saat push ke main
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to Production Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }} # Atau gunakan password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }} # Defaultnya 22
+        script: |
+          # 1. Masuk ke direktori proyek di server Anda
+          cd /home/xukxmbxe/RentalKamera
+          
+          # 2. Ambil perubahan terbaru dari branch main
+          git pull origin main
+          
+          # 3. Install dependensi composer (tanpa dev packages)
+          composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+          
+          # 4. Buat file .env dari secret
+          echo "${{ secrets.PROD_ENV_FILE }}" > .env
+          
+          # 5. Jalankan migrasi database
+          php artisan migrate --force
+          
+          # 6. Optimasi Laravel untuk produksi
+          php artisan cache:clear
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+          
+          # 7. Install dependensi NPM & build aset
+          npm install
+          npm run prod
 
