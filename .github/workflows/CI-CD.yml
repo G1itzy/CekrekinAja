@@ -52,7 +52,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH private key from GitHub secrets
-          passphrase: ${{ secrets.SSH_KEY }}  # If using passphrase
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Passphrase for SSH key
           port: 22  # Ensure this matches your server's SSH port
           script: |
             echo "PORT: 22"  # Debugging
