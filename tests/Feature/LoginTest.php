@@ -46,7 +46,7 @@ class LoginTest extends TestCase
         try {
             // Kirimkan login dengan email yang tidak terdaftar
             $response = $this->post('/login', [
-                'email' => 'invalidemail@test.com', // Invalid email
+                'email' => 'dimas@test.com', // Invalid email
                 'password' => 'wrongpassword',  // Incorrect password
             ]);
 
@@ -137,14 +137,14 @@ class LoginTest extends TestCase
         try {
             // Buat pengguna dengan email yang belum diverifikasi
             $user = User::factory()->create([
-                'email' => 'dimas@test.com',
+                'email' => 'dimas1@test.com',
                 'password' => bcrypt('dimas'),
                 'email_verified_at' => null, // No verification date
             ]);
 
             // Kirimkan permintaan login dengan email yang belum diverifikasi
             $response = $this->post('/login', [
-                'email' => 'dimas@test.com',
+                'email' => 'dimas1@test.com',
                 'password' => 'dimas',
             ]);
 
