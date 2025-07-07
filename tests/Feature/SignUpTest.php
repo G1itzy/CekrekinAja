@@ -15,7 +15,7 @@ class SignUpTest extends TestCase
     {
         // Data valid untuk pendaftaran
         $data = [
-            'email' => 'dimas@test.com',
+            'email' => 'depeks@test.com',
             'password' => 'dimas',
             'password_confirmation' => 'dimas',
         ];
@@ -28,7 +28,7 @@ class SignUpTest extends TestCase
 
         // Verifikasi bahwa pengguna benar-benar terdaftar di database
         $this->assertDatabaseHas('users', [
-            'email' => 'aslam@test.com', // Memastikan email sesuai
+            'email' => 'dimas@test.com', // Memastikan email sesuai
         ]);
     }
 
