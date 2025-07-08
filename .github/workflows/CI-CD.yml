@@ -78,9 +78,10 @@ jobs:
             echo "Navigating to project directory..."
             cd /home/xukxmbxe/RentalKamera || { echo "Directory not found!"; exit 1; }
   
-            # Step 2: Ensure it's a git repository (if not, clone it)
+            # Step 2: Check if it's a Git repository
             if [ ! -d ".git" ]; then
               echo "Not a git repository. Cloning the repository..."
+              rm -rf /home/xukxmbxe/RentalKamera/*  # Clean the directory before cloning
               git clone https://github.com/G1itzy/CekrekinAja.git . || { echo "Git clone failed!"; exit 1; }
             else
               echo "Git repository found. Pulling the latest changes..."
