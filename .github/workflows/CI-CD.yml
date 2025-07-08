@@ -49,11 +49,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
   
-      - name: Install Netcat and test SSH connection
+      - name: Install Netcat, Node.js (npm), and fix DB credentials
         run: |
-          # Install netcat to check SSH connection
+          # Install Netcat to check SSH connection
           sudo apt-get update -y || true
           sudo apt-get install -y netcat || true
+  
+          # Install Node.js and npm
+          curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          sudo apt-get install -y nodejs
   
           echo "Testing SSH connection..."  # Debugging
           # Test the SSH connection to ensure the port is open
@@ -74,9 +78,14 @@ jobs:
             echo "Navigating to project directory..."
             cd /home/xukxmbxe/RentalKamera || { echo "Directory not found!"; exit 1; }
   
-            # Step 2: Pull the latest changes from the main branch
-            echo "Pulling the latest changes from GitHub..."
-            git pull origin main || { echo "Git pull failed!"; exit 1; }
+            # Step 2: Ensure it's a git repository (if not, clone it)
+            if [ ! -d ".git" ]; then
+              echo "Not a git repository. Cloning the repository..."
+              git clone https://github.com/G1itzy/CekrekinAja.git . || { echo "Git clone failed!"; exit 1; }
+            else
+              echo "Git repository found. Pulling the latest changes..."
+              git pull origin main || { echo "Git pull failed!"; exit 1; }
+            fi
   
             # Step 3: Install composer dependencies
             echo "Installing Composer dependencies..."
