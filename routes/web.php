@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AlatController;
+use App\Http\Controllers\Api\AlatApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
@@ -79,6 +80,10 @@ Route::middleware(['auth','admin'])->group(function () {
     Route::get('/admin/buat-reservasi/{userId}',[AdminController::class,'newOrderIndex'])->name('admin.buatreservasi');
     Route::post('/admin/buat-reservasi/order/{userId}',[AdminController::class,'createNewOrder'])->name('admin.createorder');
 
+    Route::get('/admin/alat/{id?}',[AlatController::class, 'index'])->name('alat.index');
+    Route::get('/admin/alat/{id}/detail',[AlatController::class,'edit'])->name('alat.edit');
+    Route::patch('/admin/alat/{id}/detail',[AlatController::class,'update'])->name('alat.update');
+
     // Penyewa atau User
     Route::get('/admin/usermanagement',[AdminController::class,'usermanagement'])->name('admin.user');
     Route::post('/admin/usermanagement/new',[AdminController::class,'newUser'])->name('user.new');
@@ -110,5 +115,30 @@ Route::middleware('auth')->group(function() {
 
 });
 
+// Rute untuk Superadmin dan Admin management
+Route::middleware(['auth', 'superuser'])->group(function () {
+    Route::get('/admin/admin-management', [AdminController::class, 'adminmanagement'])->name('superuser.admin');
+    Route::post('/admin/usermanagement/new', [AdminController::class, 'newUser'])->name('user.new');
+    
+    // Promote to Admin
+    Route::patch('admin/user/promote/{id}', [UserController::class, 'promote'])->name('user.promote');
+    
+    // Promote to Superadmin
+    Route::patch('admin/user/promote-to-superadmin/{id}', [UserController::class, 'promoteToSuperAdmin'])->name('user.promoteToSuperAdmin');
+
+    // Demote to Member
+    Route::patch('admin/user/demote/{id}', [UserController::class, 'demote'])->name('user.demote');
+});
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    // Admin Route
+    Route::get('/admin/usermanagement', [AdminController::class, 'usermanagement'])->name('admin.user');
+});
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/alats', [AlatApiController::class, 'showAllAlat']);
+    Route::get('/alats/search', [AlatApiController::class, 'searchAlatByName']);
+    Route::post('/alats', [AlatApiController::class, 'createAlat']);
+});
 
 Route::get('/logout',[AuthController::class, 'logout'])->name('logout');
