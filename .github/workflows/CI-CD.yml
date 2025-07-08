@@ -44,11 +44,11 @@ jobs:
     needs: test  # Ensure deploy only runs after the test job passes
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
+  
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+  
       - name: Deploy to Production Server
         uses: appleboy/ssh-action@v0.1.1
         with:
@@ -58,12 +58,15 @@ jobs:
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Passphrase if required
           port: 5451  # Ensure SSH port is correct
           script: |
+            # Install netcat (nc) to check SSH connection
+            sudo apt-get update && sudo apt-get install -y netcat
+  
             echo "Testing SSH connection..."  # Debugging
             # Test the SSH connection to ensure port is open
             nc -zv ${{ secrets.SSH_HOST }} 5451 || exit 1  # Exit if the connection fails
-
+  
             echo "SSH connection successful. Starting deployment..."
-
+  
             # Deployment steps
             cd /home/username/your-project-directory  # Adjust path
             git pull origin main  # Pull the latest changes from the main branch
