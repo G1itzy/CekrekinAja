@@ -52,6 +52,11 @@
                         <div class="form-floating mb-1">
                             <input type="password" name="oldPassword" class="form-control" id="floatingOld" required>
                             <label for="floatingOld">Password Saat Ini</label>
+                            @error('password')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         <div class="form-floating mb-1">
                             <input type="password" name="newPassword" class="form-control" id="floatingNew" required>
