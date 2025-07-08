@@ -70,30 +70,33 @@ jobs:
         run: php artisan test
 
     name: Deploy to Hypercloud Host
-        on:
-          push:
-            branches: - main  # atau cabang yang sesuai
-        
-        jobs:
-          deploy:
-            runs-on: ubuntu-latest
-        
-            steps:
-              # Checkout repository
-              
-        name: Checkout code
-              uses: actions/checkout@v2
-        
-              # Setup SSH
-              
-        name: Set up SSH
-              uses: webfactory/ssh-agent@v0.5.3
-              with:
-                ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-        
-              # Deploy to server using SSH
-              
-        name: Deploy to Server
-              run: |
-                ssh -o StrictHostKeyChecking=no username@hostname "
-                  cd /home/username/public_html/repository && git pull origin main && composer install"
+
+    on:
+      push:
+        branches:
+          
+    main  # atau cabang yang sesuai
+    
+    jobs:
+      deploy:
+        runs-on: ubuntu-latest
+    
+        steps:
+          # Checkout repository
+          
+    name: Checkout code
+          uses: actions/checkout@v2
+    
+          # Setup SSH
+          
+    name: Set up SSH
+          uses: webfactory/ssh-agent@v0.5.3
+          with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    
+          # Deploy to server using SSH
+          
+    name: Deploy to Server
+          run: |
+            ssh -o StrictHostKeyChecking=no username@hostname "
+              cd /home/username/public_html/repository && git pull origin main && composer install"
