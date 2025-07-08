@@ -34,16 +34,17 @@
         </form>
         <div class="card shadow h-100">
             <div class="card-header"><small class="text-muted">klik nama alat untuk melihat detail</small></div>
-            <div class="card-body" style="height: 750px; overflow:auto">
+            <div class="card-body" style="height: 500px; overflow:auto">
                 <div class="row row-cols-sm-2 row-cols-lg-4 g-2">
                     @foreach ($alat as $item)
                     <div class="col">
                         <div class="card h-100">
-                            <img class="card-img-top" src="{{ url('') }}/images/{{ $item->gambar }}" style="height: 100px; object-fit: cover;filter: brightness(40%);" alt="">
+                            <img class="card-img-top" src="{{ url('') }}/images/{{ $item->gambar }}" style="height: 100px; object-fit: cover;filter: brightness(40%);" alt=""/>
                             <div class="card-body">
                                 <span class="badge bg-warning">{{ $item->category->nama_kategori }}</span><br>
-                                <b><a class="link-dark" href="{{ route('home.detail',['id' => $item->id]) }}">{{ $item->nama_alat }}</b></a><br>
-                                <small>{{ $item->deskripsi }}</small><br>
+                                <b><a class="link-dark" href="{{ route('home.detail',['id' => $item->id]) }}">{{ $item->nama_alat }}</a></b><br>
+                                <!-- Deskripsi disembunyikan di halaman utama -->
+                                <small class="d-none">{{ $item->deskripsi }}</small><br>
                                 <hr>
                                 <div class="d-flex w-100 justify-content-between">
                                     <small class="mb-1"><b>@money($item->harga24)</b></small>
@@ -57,21 +58,25 @@
                                     <small class="mb-1"><b>@money($item->harga6)</b></small>
                                     <small><b>6jam</b></small>
                                 </div>
-                            </div>
-                            <div class="card-footer">
-                                <form action="{{ route('cart.store',['id' => $item->id, 'userId' => Auth::user()->id]) }}" method="POST">
-                                    @csrf
-                                    <div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="addtocartdropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Tambah ke Keranjang
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="addtocartdropdown">
-                                            <li><button type="submit" class="dropdown-item" name="btn" value="24"><i class="fas fa-shopping-cart"></i> @money($item->harga24) <b>24jam</b></button></li>
-                                            <li><button type="submit" class="dropdown-item" name="btn" value="12"><i class="fas fa-shopping-cart"></i> @money($item->harga12) <b>12jam</b></button></li>
-                                            <li><button type="submit" class="dropdown-item" name="btn" value="6"><i class="fas fa-shopping-cart"></i> @money($item->harga6) <b>6jam</b></button></li>
-                                        </ul>
-                                    </div>
-                                </form>
+                                <!-- Button Trigger Modal -->
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $item->id }}">
+                                        Detail
+                                    </button>
+                                    <form action="{{ route('cart.store',['id' => $item->id, 'userId' => Auth::user()->id]) }}" method="POST">
+                                        @csrf
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="addtocartdropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Tambah ke Keranjang
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="addtocartdropdown">
+                                                <li><button type="submit" class="dropdown-item" name="btn" value="24"><i class="fas fa-shopping-cart"></i> @money($item->harga24) <b>24jam</b></button></li>
+                                                <li><button type="submit" class="dropdown-item" name="btn" value="12"><i class="fas fa-shopping-cart"></i> @money($item->harga12) <b>12jam</b></button></li>
+                                                <li><button type="submit" class="dropdown-item" name="btn" value="6"><i class="fas fa-shopping-cart"></i> @money($item->harga6) <b>6jam</b></button></li>
+                                            </ul>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -99,7 +104,7 @@
                             <form action="{{ route('cart.destroy',['id' => $item->id]) }}" method="POST">
                                 @method('DELETE')
                                 @csrf
-                                <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></a>
+                                <button class="btn btn-danger" type="submit"><i class="fas fa-trash"></i></button>
                             </form>
                             </div>
                         </div>
@@ -120,10 +125,55 @@
                         <input type="date" name="start_date" class="form-control mb-2" required>
                         <small>Jam Pengambilan</small>
                         <input type="time" name="start_time" class="form-control mb-3" required>
-                    <button type="submit" style="width:100%" class="btn btn-success" {{ (Auth::user()->cart->count() == 0) ? 'disabled' : ''  }}>Checkout</a>
+                    <button type="submit" style="width:100%" class="btn btn-success" {{ (Auth::user()->cart->count() == 0) ? 'disabled' : ''  }}>Checkout</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal Detail -->
+@foreach ($alat as $item)
+<div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1" aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailModalLabel{{ $item->id }}">{{ $item->nama_alat }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+            <strong>Kategori:</strong>
+            <span class="badge bg-primary">{{ $item->category->nama_kategori }}</span>
+        </div>
+        <div class="mb-3">
+            <strong>Deskripsi:</strong>
+            <p class="text-muted">{{ $item->deskripsi }}</p>
+        </div>
+        <div class="mb-3">
+            <strong>Spesifikasi:</strong>
+            <p class="text-muted">{{ $item->spesifikasi }}</p>
+        </div>
+        <hr>
+        <div class="mb-3">
+            <strong>Harga 24 Jam:</strong>
+            <span class="text-success">@money($item->harga24)</span>
+        </div>
+        <div class="mb-3">
+            <strong>Harga 12 Jam:</strong>
+            <span class="text-success">@money($item->harga12)</span>
+        </div>
+        <div class="mb-3">
+            <strong>Harga 6 Jam:</strong>
+            <span class="text-success">@money($item->harga6)</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
 @endsection
