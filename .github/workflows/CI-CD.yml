@@ -20,7 +20,7 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h mysql -u root -p${{ secrets.DB_PASSWORD }}"
+          --health-cmd="mysqladmin ping"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
@@ -43,17 +43,17 @@ jobs:
           echo "APP_ENV=testing" >> .env
           echo "APP_KEY=base64:$(php artisan key:generate --show)" >> .env
           echo "DB_CONNECTION=mysql" >> .env
-          echo "DB_HOST=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
           echo "DB_PORT=3306" >> .env
           echo "DB_DATABASE=laravel_test" >> .env
           echo "DB_USERNAME=root" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env  # Correctly reference secrets here
 
       - name: Run Tests
         run: php artisan test
 
   deploy:
-    needs: test  # Pastikan 'deploy' hanya berjalan setelah 'test' berhasil
+    needs: test  # Ensure deploy only runs after the test job passes
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       
@@ -64,27 +64,27 @@ jobs:
       - name: Deploy to Production Server
         uses: appleboy/ssh-action@v0.1.1
         with:
-          host: ${{ secrets.SSH_HOST }}  # Host SSH server (pastikan ada di GitHub Secrets)
-          username: ${{ secrets.SSH_USERNAME }}  # Username SSH server
-          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Kunci privat SSH
-          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Passphrase SSH jika ada
-          port: 5451  # Port SSH (pastikan benar)
+          host: ${{ secrets.SSH_HOST }}  # Use SSH host from secrets
+          username: ${{ secrets.SSH_USERNAME }}  # Use SSH username from secrets
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # Use SSH private key from secrets
+          passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Passphrase if required
+          port: 5451  # Ensure SSH port is correct
           script: |
             echo "Testing SSH connection..."  # Debugging
-            # Uji koneksi SSH ke server untuk memastikan port 5451 terbuka
-            nc -zv ${{ secrets.SSH_HOST }} 5451 || exit 1  # Gagal jika koneksi tidak berhasil
+            # Test the SSH connection to ensure port is open
+            nc -zv ${{ secrets.SSH_HOST }} 5451 || exit 1  # Exit if the connection fails
 
             echo "SSH connection successful. Starting deployment..."
 
-            # Langkah-langkah deployment utama
+            # Deployment steps
             cd /home/xukxmbxe/RentalKamera
-            git pull origin main  # Menarik perubahan terbaru dari repo utama
-            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev  # Instal dependensi composer
-            echo "${{ secrets.PROD_ENV_FILE }}" > .env  # Pastikan file .env diisi dengan data yang benar
-            php artisan migrate --force  # Menjalankan migrasi database
-            php artisan cache:clear  # Membersihkan cache aplikasi
-            php artisan config:cache  # Meng-cache konfigurasi aplikasi
-            php artisan route:cache  # Meng-cache rute aplikasi
-            php artisan view:cache  # Meng-cache tampilan aplikasi
-            npm install  # Install dependensi npm
-            npm run prod  # Membuat build produksi
+            git pull origin main  # Pull the latest changes from the main branch
+            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev  # Install composer dependencies
+            echo "${{ secrets.PROD_ENV_FILE }}" > .env  # Use the correct production .env file from secrets
+            php artisan migrate --force  # Run database migrations
+            php artisan cache:clear  # Clear the application cache
+            php artisan config:cache  # Cache the application config
+            php artisan route:cache  # Cache the routes
+            php artisan view:cache  # Cache the views
+            npm install  # Install npm dependencies
+            npm run prod  # Build the production assets
