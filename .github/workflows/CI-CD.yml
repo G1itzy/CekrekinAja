@@ -51,9 +51,9 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}  # Host SSH server (pastikan ada di GitHub Secrets)
           username: ${{ secrets.SSH_USERNAME }}  # Username SSH server
-          port: 5451  # Port SSH (pastikan benar)
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # Kunci privat SSH
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Passphrase SSH jika ada
+          port: 5451  # Port SSH (pastikan benar)
           script: |
             echo "Testing SSH connection..."  # Debugging
             # Uji koneksi SSH ke server untuk memastikan port 5451 terbuka
