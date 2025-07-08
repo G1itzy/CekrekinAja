@@ -17,17 +17,22 @@
             </div>
         </nav>
         <div class="container mt-4 px-3">
+            <!-- Menampilkan Pesan Flash: Sukses dan Error -->
             @if (session('updated'))
                 <div class="alert alert-success">{{ session('updated') }}</div>
             @endif
             @if (session('message'))
                 <div class="alert alert-danger">{{ session('message') }}</div>
             @endif
+
             <div class="row justify-content-center text-center mb-4">
                 <h5>Pengaturan Akun</h5>
             </div>
+
+            <!-- Form untuk Pengaturan Akun -->
             <div class="row justify-content-center">
                 <div class="col col-md-5">
+                    <!-- Form untuk memperbarui data akun (Nama, Email, Telepon) -->
                     <form action="{{ route('akun.update') }}" method="POST">
                         @method('PATCH')
                         @csrf
@@ -45,18 +50,16 @@
                         </div>
                         <button type="submit" class="btn btn-success w-100 mt-4">Simpan</button>
                     </form>
+
                     <h5 class="mt-4">Ganti Password</h5>
+
+                    <!-- Form untuk mengganti password -->
                     <form action="{{ route('changepassword') }}" method="POST">
                         @method('PATCH')
                         @csrf
                         <div class="form-floating mb-1">
                             <input type="password" name="oldPassword" class="form-control" id="floatingOld" required>
                             <label for="floatingOld">Password Saat Ini</label>
-                            @error('oldPassword')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
                         </div>
                         <div class="form-floating mb-1">
                             <input type="password" name="newPassword" class="form-control" id="floatingNew" required>
@@ -64,13 +67,17 @@
                         </div>
                         <button type="submit" class="btn btn-success w-100 mt-4">Ganti Password</button>
                     </form>
+
+                    <!-- Kembali ke halaman yang sesuai berdasarkan peran pengguna -->
                     @if (Auth::user()->role != 0)
-                    <a class="btn btn-danger w-100 mt-2" href="{{ route('admin.index') }}">Kembali</a>
+                        <a class="btn btn-danger w-100 mt-2" href="{{ route('admin.index') }}">Kembali</a>
                     @else
-                    <a class="btn btn-danger w-100 mt-2" href="{{ route('member.index') }}">Kembali</a>
+                        <a class="btn btn-danger w-100 mt-2" href="{{ route('member.index') }}">Kembali</a>
                     @endif
                 </div>
             </div>
         </div>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0ti4p+YWoh0meVpxpRVeD8Zy5fdoIQz8Ylo0j/wchZmZi1ek" crossorigin="anonymous"></script>
     </body>
 </html>

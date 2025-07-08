@@ -19,7 +19,7 @@ class UserController extends Controller
     {
         // Cek apakah user ditemukan
         $user = User::find($id);
-        
+
         if (!$user) {
             return back()->with('error', 'Pengguna tidak ditemukan.');
         }
@@ -39,7 +39,7 @@ class UserController extends Controller
     {
         // Cek apakah user ditemukan
         $user = User::find($id);
-        
+
         if (!$user) {
             return back()->with('error', 'Pengguna tidak ditemukan.');
         }
@@ -105,27 +105,32 @@ class UserController extends Controller
     }
 
     // Ganti password
-    public function changePassword(Request $request) {
-        $user = User::find(Auth::id());
-
-        $this->validate($request,[
+    public function changePassword(Request $request)
+    {
+        // Validasi input
+        $request->validate([
             'oldPassword' => 'required',
-            'newPassword' => 'required|min:8|confirmed',
+            'newPassword' => 'required|min:8', // Aturan validasi untuk password baru
         ]);
 
-        if(Hash::check($request['oldPassword'], $user->password)) {
-            $user->update([
-                'password' => Hash::make($request['newPassword'])
-            ]);
-            return back()->with('updated','Password berhasil diubah');
-        } else {
-            return back()->with('message','Password saat ini salah');
+        // Cek apakah password lama yang dimasukkan sesuai dengan password yang ada di database
+        if (!Hash::check($request->oldPassword, Auth::user()->password)) {
+            // Jika password lama salah, kirim pesan error
+            return redirect()->back()->with('message', 'Password saat ini salah.');
         }
+        // Ambil pengguna yang sedang login (ini adalah model Eloquent `User`)
+        $user = Auth::user(); // Ini harus mengembalikan instance model User
+        // Cek apakah objek yang didapatkan adalah instance dari model User
+        if ($user instanceof User) {
+            // Ganti password dengan password baru
+            $user->password = Hash::make($request->newPassword); // Update password baru
+            $user->save(); // Pastikan kamu memanggil save() untuk menyimpan perubahan ke database
 
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('authenticate')->with('message', 'Silakan login ulang setelah mengganti password.');
+            // Tampilkan pesan sukses setelah berhasil mengganti password
+            return redirect()->back()->with('updated', 'Password berhasil diubah.');
+        } else {
+            // Jika tidak ditemukan pengguna, tampilkan pesan error
+            return redirect()->back()->with('error', 'Terjadi kesalahan, pengguna tidak ditemukan.');
+        }
     }
 }
