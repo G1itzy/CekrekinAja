@@ -71,7 +71,7 @@ jobs:
           port: 5451  # Ensure SSH port is correct
           script: |
             # Deployment steps
-            cd /home/xukxmbxe/RentalKamera  # Correct path to your project directory
+            cd /home/xukxmbxe/repositories/CekrekinAja  # Correct path to your project directory
             git pull origin main  # Pull the latest changes from the main branch
             composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev  # Install composer dependencies
             echo "${{ secrets.PROD_ENV_FILE }}" > .env  # Use the correct production .env file from secrets
