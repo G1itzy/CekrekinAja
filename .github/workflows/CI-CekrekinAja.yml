@@ -71,15 +71,6 @@ jobs:
 
 name: Deploy to Hosting
 
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
     steps:
       - name: 🚚 Deploy to Server
         uses: appleboy/ssh-action@v1.0.3
