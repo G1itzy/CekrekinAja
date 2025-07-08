@@ -37,6 +37,9 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
+      - name: Run Tests
+        run: php artisan test
+
   deploy:
     needs: test  # Pastikan 'deploy' hanya berjalan setelah 'test' berhasil
     runs-on: ubuntu-latest
@@ -72,4 +75,4 @@ jobs:
             php artisan route:cache  # Meng-cache rute aplikasi
             php artisan view:cache  # Meng-cache tampilan aplikasi
             npm install  # Install dependensi npm
-            npm run prod  # Membuat build produksi
+            npm run prod  # Membuat build produksi
