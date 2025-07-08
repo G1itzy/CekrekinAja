@@ -105,31 +105,27 @@ class UserController extends Controller
     }
 
     // Ganti password
-    public function changePassword(Request $request)
-    {
+    public function changePassword(Request $request) {
         $user = User::find(Auth::id());
 
-        // Validasi input password
-        $this->validate($request, [
+        $this->validate($request,[
             'oldPassword' => 'required',
-            'newPassword' => 'required|min:8|confirmed', // Menambahkan validasi untuk konfirmasi password
+            'newPassword' => 'required|min:8|confirmed',
         ]);
 
-        // Cek apakah password lama benar
-        if (Hash::check($request['oldPassword'], $user->password)) {
-            // Update password baru
+        if(Hash::check($request['oldPassword'], $user->password)) {
             $user->update([
                 'password' => Hash::make($request['newPassword'])
             ]);
-
-            // Logout setelah mengganti password
-            Auth::logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return redirect()->route('authenticate')->with('message', 'Silakan login ulang setelah mengganti password.');
+            return back()->with('updated','Password berhasil diubah');
         } else {
-            return back()->with('message', 'Password saat ini salah');
+            return back()->with('message','Password saat ini salah');
         }
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('authenticate')->with('message', 'Silakan login ulang setelah mengganti password.');
     }
 }
