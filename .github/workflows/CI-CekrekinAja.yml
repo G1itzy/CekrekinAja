@@ -1,5 +1,5 @@
 
-name: CekrekinAja CI/CD (with MySQL)
+name: CI CekrekinAja
 
 on:
   push:
@@ -68,34 +68,3 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: password
         run: php artisan test
-
-    deployment:
-    tasks:
-    - export DEPLOYPATH=/home/xukxmbxe/CekrekinAja/public
-    - mkdir -p $DEPLOYPATH
-    - /bin/rm -rf $DEPLOYPATH/*
-    - /bin/cp -R * $DEPLOYPATH
-    
-    - '[ ! -f "$DEPLOYPATH/.env" ] && /bin/cp $DEPLOYPATH/.env.example $DEPLOYPATH/.env'
-
-    - /opt/cpanel/alt-php82/root/usr/bin/php -d memory_limit=-1 /opt/cpanel/alt-php82/root/usr/bin/composer install --no-progress --prefer-dist --optimize-autoloader -d $DEPLOYPATH
-
-    - cd $DEPLOYPATH && /usr/bin/npm install
-    - cd $DEPLOYPATH && /usr/bin/npm run prod
-    - /opt/cpanel/ealt-php82/root/usr/bin/php $DEPLOYPATH/artisan key:generate
-    - /opt/cpanel/eaalt-php82/root/usr/bin/php $DEPLOYPATH/artisan migrate --force
-    
-    - /opt/cpanel/ealt-php82/root/usr/bin/php $DEPLOYPATH/artisan cache:clear
-    - /opt/cpanel/alt-php82/root/usr/bin/php $DEPLOYPATH/artisan config:clear
-    - /opt/cpanel/alt-php82/root/usr/bin/php $DEPLOYPATH/artisan route:clear
-    - /opt/cpanel/alt-php82/root/usr/bin/php $DEPLOYPATH/artisan view:clear
-
-    - /bin/find $DEPLOYPATH -type f -exec chmod 644 {} \;
-    - /bin/find $DEPLOYPATH -type d -exec chmod 755 {} \;
-    - /bin/chmod -R 775 $DEPLOYPATH/storage
-    - /bin/chmod -R 775 $DEPLOYPATH/bootstrap/cache
-    
-    - /bin/rm -rf $DEPLOYPATH/.git
-
-    - /bin/rm -f $DEPLOYPATH/.cpanel.yml
-    - echo "Deployment CekrekinAja selesai di $(date)!"
