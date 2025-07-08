@@ -93,7 +93,7 @@ jobs:
       # 3. Deploy aplikasi ke server
       - name: Deploy to Server
         run: |
-          ssh -o StrictHostKeyChecking=no xukxmbxe@${{ secrets.HOST }} "
+          ssh -o StrictHostKeyChecking=no xukxmbxe@103.186.30.46 "
             cd /home/username/xukxmbxe/CekrekinAja && \
             git pull origin main && \
             composer install --no-interaction --prefer-dist --optimize-autoloader && \
