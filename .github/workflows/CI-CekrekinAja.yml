@@ -28,42 +28,34 @@ jobs:
           --health-retries=3
 
     steps:
-      # 1. Checkout kode dari repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Setup PHP dengan ekstensi yang diperlukan
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: bcmath, ctype, curl, dom, fileinfo, json, mbstring, openssl, pdo, tokenizer, xml, pdo_mysql
 
-      # 3. Install dependensi menggunakan Composer
       - name: Install Composer dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
-      # 4. Install dependensi NPM dan build aset
       - name: Install NPM dependencies and build assets
         run: |
           npm install
           npm run prod
 
-      # 5. Siapkan file .env
       - name: Prepare environment file
         run: php -r "copy('.env.example', '.env');"
 
-      # 6. Generate application key untuk Laravel
       - name: Generate application key
         run: php artisan key:generate
 
-      # 7. Setup Test Database dan impor database .sql
       - name: Setup Test Database
         run: |
           sudo apt-get install -y mysql-client && \
           mysql -h 127.0.0.1 -P 3306 -u root -ppassword laravel_test < database/db_CekrekinAja.sql
 
-      # 8. Jalankan tes menggunakan PHPUnit/Pest
       - name: Run Pest/PHPUnit tests
         env:
           DB_CONNECTION: mysql
@@ -80,20 +72,17 @@ jobs:
     needs: test  # Pastikan tes dijalankan terlebih dahulu
 
     steps:
-      # 1. Checkout kode dari repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Setup SSH untuk koneksi ke server
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # 3. Deploy aplikasi ke server
       - name: Deploy to Server
         run: |
-          ssh -o StrictHostKeyChecking=no xukxmbxe@103.186.30.46 "
+          ssh -o StrictHostKeyChecking=no -p 5451 xukxmbxe@103.186.30.46 "
             cd /home/username/xukxmbxe/CekrekinAja && \
             git pull origin main && \
             composer install --no-interaction --prefer-dist --optimize-autoloader && \
