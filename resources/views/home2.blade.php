@@ -35,7 +35,7 @@
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
             <div class="col-md-5 p-lg-5 mx-auto my-3">
                 <h1 class="display-4 fw-normal">Rental Kamera CekrekinAja</h1>
-                <p class="fw-normal">Cek Ketersediaan - Reservasi - Bayar - Ambil - Ngapain di balikin. Mending gausah.</p>
+                <p class="fw-normal">Cek Ketersediaan - Reservasi - Bayar - Ambil - Jangan Lupa dibalikin.</p>
                 @if (!Auth::check())
                 <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#loginModal">Login / Daftar</button>
                 @endif
