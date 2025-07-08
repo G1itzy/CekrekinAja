@@ -1,0 +1,74 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/xukxmbxe/CekrekinAja/public
+    - mkdir -p $DEPLOYPATH
+    - /bin/rm -rf $DEPLOYPATH/*
+    - /bin/cp -R * $DEPLOYPATH
+    # --- 3. Penyiapan Lingkungan Laravel ---
+
+    # Menyiapkan file .env:
+    # Penting: File .env yang berisi kredensial produksi TIDAK boleh di-commit ke Git.
+    # Baris ini akan menyalin .env.example ke .env HANYA JIKA .env BELUM ADA.
+    # Untuk deployment pertama, Anda mungkin perlu mengedit file .env secara manual
+    # di cPanel File Manager setelah deployment ini untuk memasukkan kredensial produksi Anda.
+    - '[ ! -f "$DEPLOYPATH/.env" ] && /bin/cp $DEPLOYPATH/.env.example $DEPLOYPATH/.env'
+
+    # Menginstal dependensi Composer.
+    # PASTIKAN UNTUK MENGGANTI 'YOUR_PHP_VERSION' (contoh: ea-php82, ea-php81, ea-php74).
+    # Anda bisa memeriksa versi PHP yang aktif di cPanel melalui 'Select PHP Version'.
+    # Opsi:
+    #   --no-progress: Tidak menampilkan progress bar.
+    #   --prefer-dist: Mengunduh paket dari dist (lebih cepat).
+    #   --optimize-autoloader: Mengoptimalkan autoloader untuk produksi.
+    #   -d $DEPLOYPATH: Menjalankan perintah Composer di direktori deployment.
+    - /opt/cpanel/alt-php82/root/usr/bin/php -d memory_limit=-1 /opt/cpanel/alt-php82/root/usr/bin/composer install --no-progress --prefer-dist --optimize-autoloader -d $DEPLOYPATH
+
+    # Menginstal dependensi NPM dan membangun aset frontend (CSS/JS).
+    # Pastikan Node.js dan NPM tersedia di lingkungan cPanel Anda.
+    # Path ke 'npm' mungkin bervariasi, ini adalah contoh path umum.
+    - cd $DEPLOYPATH && /usr/bin/npm install
+    - cd $DEPLOYPATH && /usr/bin/npm run prod
+
+    # Menghasilkan kunci aplikasi Laravel. Ini penting untuk keamanan.
+    # Jika kunci sudah ada di .env, perintah ini tidak akan mengubahnya.
+    - /opt/cpanel/ealt-php82/root/usr/bin/php $DEPLOYPATH/artisan key:generate
+
+    # Menjalankan migrasi database. Ini adalah cara standar untuk memperbarui skema database
+    # di Laravel untuk produksi. Opsi '--force' diperlukan saat menjalankan di produksi.
+    # PERINGATAN: Pastikan Anda memahami dampak migrasi pada database produksi Anda.
+    # Jika Anda memiliki file SQL untuk import awal, Anda harus melakukannya secara manual
+    # melalui phpMyAdmin atau SSH (jika tersedia) untuk pertama kali.
+    - /opt/cpanel/eaalt-php82/root/usr/bin/php $DEPLOYPATH/artisan migrate --force
+
+    # Membersihkan cache Laravel untuk memastikan perubahan terbaru diterapkan.
+    - /opt/cpanel/ealt-php82/root/usr/bin/php $DEPLOYPATH/artisan cache:clear
+    - /opt/cpanel/alt-php82/root/usr/bin/php $DEPLOYPATH/artisan config:clear
+    - /opt/cpanel/alt-php82/root/usr/bin/php $DEPLOYPATH/artisan route:clear
+    - /opt/cpanel/alt-php82/root/usr/bin/php $DEPLOYPATH/artisan view:clear
+
+    # --- 4. Mengatur Izin File (Penting untuk Keamanan dan Fungsionalitas) ---
+
+    # Mengatur izin default untuk file (644) dan folder (755).
+    # Ini adalah izin yang aman dan umum untuk aplikasi web.
+    - /bin/find $DEPLOYPATH -type f -exec chmod 644 {} \;
+    - /bin/find $DEPLOYPATH -type d -exec chmod 755 {} \;
+
+    # Mengatur izin yang lebih longgar (775) untuk folder 'storage' dan 'bootstrap/cache'
+    # Laravel agar aplikasi dapat menulis log, cache, dll.
+    - /bin/chmod -R 775 $DEPLOYPATH/storage
+    - /bin/chmod -R 775 $DEPLOYPATH/bootstrap/cache
+
+    # --- 5. Pembersihan Akhir (Opsional) ---
+
+    # Menghapus folder .git dari direktori deployment untuk keamanan dan ukuran.
+    # Folder .git berisi riwayat versi dan tidak diperlukan di lingkungan produksi.
+    - /bin/rm -rf $DEPLOYPATH/.git
+
+    # Menghapus file .cpanel.yml dari direktori deployment.
+    # File ini hanya diperlukan oleh cPanel untuk proses deployment, bukan oleh aplikasi.
+    - /bin/rm -f $DEPLOYPATH/.cpanel.yml
+
+    # --- 6. Pesan Konfirmasi ---
+
+    # Menampilkan pesan di log cPanel setelah deployment selesai.
+    - echo "Deployment CekrekinAja selesai di $(date)!"
