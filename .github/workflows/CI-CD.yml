@@ -49,6 +49,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
   
+      - name: Install Netcat and test SSH connection
+        run: |
+          # Install netcat to check SSH connection
+          sudo apt-get update -y || true
+          sudo apt-get install -y netcat || true
+  
+          echo "Testing SSH connection..."  # Debugging
+          # Test the SSH connection to ensure the port is open
+          nc -zv ${{ secrets.SSH_HOST }} 5451 || exit 1  # Exit if the connection fails
+  
+          echo "SSH connection successful. Starting deployment..."
+  
       - name: Deploy to Production Server
         uses: appleboy/ssh-action@v0.1.1
         with:
@@ -58,17 +70,8 @@ jobs:
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}  # Passphrase if required
           port: 5451  # Ensure SSH port is correct
           script: |
-            # Install netcat (nc) to check SSH connection without sudo
-            apt-get update && apt-get install -y netcat
-  
-            echo "Testing SSH connection..."  # Debugging
-            # Test the SSH connection to ensure port is open
-            nc -zv ${{ secrets.SSH_HOST }} 5451 || exit 1  # Exit if the connection fails
-  
-            echo "SSH connection successful. Starting deployment..."
-  
             # Deployment steps
-            cd /home/xukxmbxe/RentalKamera  # Adjust path
+            cd /home/xukxmbxe/public_html/RentalKamera  # Correct path to your project directory
             git pull origin main  # Pull the latest changes from the main branch
             composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev  # Install composer dependencies
             echo "${{ secrets.PROD_ENV_FILE }}" > .env  # Use the correct production .env file from secrets
