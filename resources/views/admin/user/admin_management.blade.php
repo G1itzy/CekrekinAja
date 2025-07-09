@@ -49,28 +49,6 @@
     .btn-group {
         display: flex;
         gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    /* Styling untuk tabel */
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    table th, table td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    table th {
-        background-color: #f8f9fa;
-    }
-
-    /* Modal styling */
-    .modal-dialog {
-        max-width: 600px;
     }
 </style>
 
@@ -88,7 +66,7 @@
             <div class="card shadow">
                 <div class="card-header"><b>User</b></div>
                 <div class="card-body">
-                    <table id="dataTable" class="table table-striped">
+                    <table id="dataTable" class="table">
                         <thead>
                             <tr>
                                 <th>No.</th>
@@ -107,7 +85,7 @@
                                 <td>{{ $item->telepon }}</td>
                                 <td>
                                     @if (Auth::user()->role == 2) <!-- Only Superadmin can see these buttons -->
-                                        <div class="btn-group">
+                                        <div class="btn-group w-100">
                                             <!-- Promote to Admin -->
                                             <form action="{{ route('user.promote', ['id' => $item->id]) }}" method="POST" class="d-inline">
                                                 @csrf
@@ -136,7 +114,7 @@
             <div class="card shadow">
                 <div class="card-header"><b>Admin</b></div>
                 <div class="card-body">
-                    <table class="table table-striped">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>No.</th>
