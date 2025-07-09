@@ -59,6 +59,7 @@
     /* Tombol dengan beberapa tombol dalam satu baris (Button group) */
     .btn-group {
         display: flex;
+        flex-direction: column;  /* Menyusun tombol dalam satu kolom */
         gap: 5px;  /* Memberikan sedikit ruang antar tombol */
         justify-content: flex-start; /* Tombol tetap di kiri */
         width: 100%;
@@ -147,7 +148,7 @@
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-superadmin btn-sm btn-action">Jadikan Superadmin</button>
                                             </form>
-                                            <!-- Hapus User -->
+                                            <!-- Hapus User - Tombol terpisah di bawah tombol lainnya -->
                                             <form action="{{ route('user.destroy', ['id' => $item->id]) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
