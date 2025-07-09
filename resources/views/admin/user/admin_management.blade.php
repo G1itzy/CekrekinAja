@@ -48,7 +48,44 @@
     /* Tombol dengan beberapa tombol dalam satu baris (Button group) */
     .btn-group {
         display: flex;
+        flex-wrap: wrap;
         gap: 10px;
+    }
+
+    /* Styling untuk tabel */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    table th, table td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+        background-color: #f8f9fa;
+    }
+
+    /* Modal styling */
+    .modal-dialog {
+        max-width: 600px;
+    }
+
+    /* Responsif untuk mobile */
+    @media (max-width: 768px) {
+        .btn-group {
+            flex-direction: column;
+        }
+        table th, table td {
+            font-size: 12px;
+            padding: 8px;
+        }
+        .btn-action {
+            width: auto;
+            padding: 8px;
+        }
     }
 </style>
 
@@ -66,7 +103,7 @@
             <div class="card shadow">
                 <div class="card-header"><b>User</b></div>
                 <div class="card-body">
-                    <table id="dataTable" class="table">
+                    <table id="dataTable" class="table table-striped">
                         <thead>
                             <tr>
                                 <th>No.</th>
@@ -85,7 +122,7 @@
                                 <td>{{ $item->telepon }}</td>
                                 <td>
                                     @if (Auth::user()->role == 2) <!-- Only Superadmin can see these buttons -->
-                                        <div class="btn-group w-100">
+                                        <div class="btn-group">
                                             <!-- Promote to Admin -->
                                             <form action="{{ route('user.promote', ['id' => $item->id]) }}" method="POST" class="d-inline">
                                                 @csrf
@@ -114,7 +151,7 @@
             <div class="card shadow">
                 <div class="card-header"><b>Admin</b></div>
                 <div class="card-body">
-                    <table class="table">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>No.</th>
