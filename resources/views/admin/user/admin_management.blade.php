@@ -2,56 +2,46 @@
 
 @section('content')
 <style>
-    /* Tombol dengan ukuran konsisten */
+   /* Tombol dengan ukuran konsisten */
     .btn-action {
-        width: 48%;
         padding: 10px;
         text-align: center;
         font-size: 14px;
         border-radius: 5px;
         margin: 5px 0;
+        width: auto; /* Menyesuaikan dengan ukuran teks */
     }
-
+    
     /* Tombol untuk Superadmin */
     .btn-superadmin {
         background-color: #28a745; /* Warna hijau profesional */
         border-color: #28a745;
     }
-
+    
     .btn-superadmin:hover {
         background-color: #218838;
         border-color: #218838;
     }
-
+    
     /* Tombol untuk Admin */
     .btn-admin {
         background-color: #007bff; /* Warna biru gelap profesional */
         border-color: #007bff;
     }
-
+    
     .btn-admin:hover {
         background-color: #0056b3;
         border-color: #0056b3;
     }
-
-    /* Tombol untuk menghapus Admin */
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-
-    .btn-danger:hover {
-        background-color: #c82333;
-        border-color: #c82333;
-    }
-
+    
     /* Tombol dengan beberapa tombol dalam satu baris (Button group) */
     .btn-group {
         display: flex;
         gap: 10px;
-        justify-content: space-between;
+        justify-content: space-between; /* Tombol tetap berdampingan */
         width: 100%;
     }
+
 
     /* Styling untuk tabel */
     table {
