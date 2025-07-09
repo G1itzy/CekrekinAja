@@ -11,63 +11,18 @@
         margin: 5px 0;
         width: 100%; /* Tombol mengisi lebar yang tersedia dalam grup */
     }
-    
-    /* Tombol untuk Superadmin */
-    .btn-superadmin {
-        background-color: #28a745; /* Hijau untuk Superadmin */
-        border-color: #28a745;
-    }
-    
-    .btn-superadmin:hover {
-        background-color: #218838;
-        border-color: #218838;
-    }
-    
-    /* Tombol untuk Admin */
-    .btn-admin {
-        background-color: #007bff; /* Biru untuk Admin */
-        border-color: #007bff;
-    }
-    
-    .btn-admin:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
-    }
-    
-    /* Tombol untuk menghapus Admin */
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-    
-    .btn-danger:hover {
-        background-color: #c82333;
-        border-color: #c82333;
-    }
-
-    /* Tombol untuk Hapus User */
-    .btn-delete {
-        background-color: #ffc107; /* Kuning untuk tombol Hapus */
-        border-color: #ffc107;
-    }
-    
-    .btn-delete:hover {
-        background-color: #e0a800;
-        border-color: #e0a800;
-    }
 
     /* Tombol dengan titik tiga (ellipsis) */
     .btn-ellipsis {
-        background-color: #6c757d;
-        border-color: #6c757d;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
+        background-color: transparent; /* Tanpa latar belakang */
+        border: none;
+        color: #6c757d;
+        font-size: 20px;
+        padding: 0;
     }
 
     .btn-ellipsis:hover {
-        background-color: #5a6268;
-        border-color: #5a6268;
+        color: #0056b3;
     }
 
     /* Dropdown Menu */
@@ -75,15 +30,51 @@
         min-width: 220px;
         padding: 10px;
         border-radius: 5px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .dropdown-item {
         font-size: 14px;
         padding: 8px 16px;
+        border-radius: 5px;
     }
 
     .dropdown-item:hover {
         background-color: #f1f1f1;
+    }
+
+    /* Warna untuk pilihan Dropdown */
+    .btn-admin {
+        background-color: #007bff; /* Biru untuk Admin */
+        border-color: #007bff;
+        color: white;
+    }
+
+    .btn-admin:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    .btn-superadmin {
+        background-color: #28a745; /* Hijau untuk Superadmin */
+        border-color: #28a745;
+        color: white;
+    }
+
+    .btn-superadmin:hover {
+        background-color: #218838;
+        border-color: #218838;
+    }
+
+    .btn-delete {
+        background-color: #dc3545; /* Merah untuk Hapus User */
+        border-color: #dc3545;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background-color: #c82333;
+        border-color: #c82333;
     }
 
     /* Styling untuk tabel */
