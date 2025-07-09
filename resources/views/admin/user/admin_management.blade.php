@@ -4,12 +4,12 @@
 <style>
     /* Tombol dengan ukuran konsisten */
     .btn-action {
-        padding: 6px 12px;  /* Padding lebih kecil agar tombol tidak terlalu besar */
-        font-size: 14px; /* Ukuran font sesuai */
+        padding: 8px 16px;  /* Padding lebih besar agar tombol lebih mudah diklik */
+        font-size: 14px;
         text-align: center;
         border-radius: 5px;
         margin: 5px 0;
-        width: auto; /* Tombol menyesuaikan dengan ukuran teks */
+        width: 100%; /* Tombol mengisi lebar yang tersedia dalam grup */
     }
     
     /* Tombol untuk Superadmin */
@@ -60,6 +60,9 @@
     .btn-ellipsis {
         background-color: #6c757d;
         border-color: #6c757d;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
     }
 
     .btn-ellipsis:hover {
@@ -69,7 +72,18 @@
 
     /* Dropdown Menu */
     .dropdown-menu {
-        min-width: 200px;
+        min-width: 220px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .dropdown-item {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f1f1f1;
     }
 
     /* Styling untuk tabel */
@@ -79,20 +93,25 @@
     }
     
     table th, table td {
-        padding: 8px;
+        padding: 12px;
         text-align: left;
         border-bottom: 1px solid #ddd;
     }
     
     table th {
         background-color: #f8f9fa;
+        font-weight: bold;
+    }
+
+    table tbody tr:hover {
+        background-color: #f1f1f1;
     }
     
     /* Modal styling */
     .modal-dialog {
         max-width: 600px;
     }
-    
+
     /* Responsif untuk mobile */
     @media (max-width: 768px) {
         .btn-group {
