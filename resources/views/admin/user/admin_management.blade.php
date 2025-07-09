@@ -2,46 +2,56 @@
 
 @section('content')
 <style>
-   /* Tombol dengan ukuran konsisten */
+    /* Tombol dengan ukuran konsisten */
     .btn-action {
         padding: 10px;
         text-align: center;
         font-size: 14px;
         border-radius: 5px;
         margin: 5px 0;
-        width: auto; /* Menyesuaikan dengan ukuran teks */
+        width: auto; /* Tombol menyesuaikan dengan teks */
     }
-    
+
     /* Tombol untuk Superadmin */
     .btn-superadmin {
-        background-color: #28a745; /* Warna hijau profesional */
+        background-color: #28a745; /* Hijau untuk Superadmin */
         border-color: #28a745;
     }
-    
+
     .btn-superadmin:hover {
         background-color: #218838;
         border-color: #218838;
     }
-    
+
     /* Tombol untuk Admin */
     .btn-admin {
-        background-color: #007bff; /* Warna biru gelap profesional */
+        background-color: #007bff; /* Biru untuk Admin */
         border-color: #007bff;
     }
-    
+
     .btn-admin:hover {
         background-color: #0056b3;
         border-color: #0056b3;
     }
-    
-    /* Tombol dengan beberapa tombol dalam satu baris (Button group) */
+
+    /* Tombol untuk menghapus Admin */
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #c82333;
+    }
+
+    /* Grup tombol yang terletak berdampingan */
     .btn-group {
         display: flex;
         gap: 10px;
-        justify-content: space-between; /* Tombol tetap berdampingan */
+        justify-content: flex-start; /* Tombol berada di sebelah kiri */
         width: 100%;
     }
-
 
     /* Styling untuk tabel */
     table {
