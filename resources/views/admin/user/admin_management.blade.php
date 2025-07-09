@@ -4,12 +4,12 @@
 <style>
     /* Tombol dengan ukuran konsisten */
     .btn-action {
-        padding: 8px 16px;  /* Mengurangi padding agar tombol tidak terlalu besar */
-        font-size: 14px; /* Ukuran font yang lebih pas untuk tombol */
+        padding: 6px 12px;  /* Padding lebih kecil agar tombol tidak terlalu besar */
+        font-size: 14px; /* Ukuran font sesuai */
         text-align: center;
         border-radius: 5px;
         margin: 5px 0;
-        width: auto; /* Tombol menyesuaikan dengan teks */
+        width: auto; /* Tombol menyesuaikan dengan ukuran teks */
     }
     
     /* Tombol untuk Superadmin */
@@ -48,7 +48,7 @@
     /* Tombol dengan beberapa tombol dalam satu baris (Button group) */
     .btn-group {
         display: flex;
-        gap: 10px;  /* Memberikan sedikit jarak antar tombol */
+        gap: 5px;  /* Memberikan sedikit ruang antar tombol */
         justify-content: flex-start; /* Tombol tetap di kiri */
         width: 100%;
     }
