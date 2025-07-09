@@ -19,6 +19,22 @@
         color: #6c757d;
         font-size: 20px;
         padding: 0;
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    /* Membuat titik tiga vertikal */
+    .btn-ellipsis span {
+        display: block;
+        height: 5px;
+        width: 5px;
+        margin: 3px 0;
+        border-radius: 50%;
+        background-color: #6c757d; /* Warna titik tiga */
+    }
+
+    .btn-ellipsis:hover span {
+        background-color: #0056b3;
     }
 
     .btn-ellipsis:hover {
@@ -160,7 +176,9 @@
                                         <div class="dropdown">
                                             <!-- Tombol dengan titik tiga vertikal (ellipsis) -->
                                             <button class="btn btn-ellipsis btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                &#8230; <!-- Simbol titik tiga vertikal -->
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                 <li>
