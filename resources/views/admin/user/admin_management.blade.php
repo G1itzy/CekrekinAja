@@ -4,76 +4,76 @@
 <style>
     /* Tombol dengan ukuran konsisten */
     .btn-action {
-        padding: 10px;
+        padding: 6px 12px;  /* Lebih kecil paddingnya */
+        font-size: 12px; /* Ukuran font lebih kecil */
         text-align: center;
-        font-size: 14px;
         border-radius: 5px;
         margin: 5px 0;
-        width: auto; /* Tombol menyesuaikan dengan teks */
+        width: auto; /* Tombol menyesuaikan dengan ukuran teks */
     }
-
+    
     /* Tombol untuk Superadmin */
     .btn-superadmin {
         background-color: #28a745; /* Hijau untuk Superadmin */
         border-color: #28a745;
     }
-
+    
     .btn-superadmin:hover {
         background-color: #218838;
         border-color: #218838;
     }
-
+    
     /* Tombol untuk Admin */
     .btn-admin {
         background-color: #007bff; /* Biru untuk Admin */
         border-color: #007bff;
     }
-
+    
     .btn-admin:hover {
         background-color: #0056b3;
         border-color: #0056b3;
     }
-
+    
     /* Tombol untuk menghapus Admin */
     .btn-danger {
         background-color: #dc3545;
         border-color: #dc3545;
     }
-
+    
     .btn-danger:hover {
         background-color: #c82333;
         border-color: #c82333;
     }
-
-    /* Grup tombol yang terletak berdampingan */
+    
+    /* Tombol dengan beberapa tombol dalam satu baris (Button group) */
     .btn-group {
         display: flex;
-        gap: 10px;
-        justify-content: flex-start; /* Tombol berada di sebelah kiri */
+        gap: 5px;  /* Lebih sedikit ruang antar tombol */
+        justify-content: flex-start;
         width: 100%;
     }
-
+    
     /* Styling untuk tabel */
     table {
         width: 100%;
         border-collapse: collapse;
     }
-
+    
     table th, table td {
-        padding: 10px;
+        padding: 8px;
         text-align: left;
         border-bottom: 1px solid #ddd;
     }
-
+    
     table th {
         background-color: #f8f9fa;
     }
-
+    
     /* Modal styling */
     .modal-dialog {
         max-width: 600px;
     }
-
+    
     /* Responsif untuk mobile */
     @media (max-width: 768px) {
         .btn-group {
