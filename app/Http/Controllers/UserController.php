@@ -133,4 +133,17 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan, pengguna tidak ditemukan.');
         }
     }
+
+    public function destroy($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();  // Menghapus user dari database
+            return redirect()->route('admin.user')->with('success', 'User berhasil dihapus');
+        } catch (\Exception $e) {
+            // Menangani kesalahan jika terjadi
+            return back()->with('error', 'Terjadi kesalahan saat menghapus user');
+        }
+    }
+
 }
