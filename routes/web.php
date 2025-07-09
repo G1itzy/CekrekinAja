@@ -47,7 +47,7 @@ Route::post('reset-password', [ForgetPasswordController::class, 'resetPassword']
 Route::middleware(['auth','superuser'])->group(function () {
     Route::get('/admin/admin-management',[AdminController::class, 'adminmanagement'])->name('superuser.admin');
 
-
+    Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
     // Alat
     Route::get('/admin/alat/{id?}',[AlatController::class, 'index'])->name('alat.index');
     Route::get('/admin/alat/{id}/detail',[AlatController::class,'edit'])->name('alat.edit');
@@ -89,6 +89,7 @@ Route::middleware(['auth','admin'])->group(function () {
     Route::post('/admin/usermanagement/new',[AdminController::class,'newUser'])->name('user.new');
     Route::patch('admin/user/promote/{id}',[UserController::class,'promote'])->name('user.promote');
     Route::patch('admin/user/demote/{id}',[UserController::class,'demote'])->name('user.demote');
+    Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
 });
 
@@ -120,6 +121,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'superuser'])->group(function () {
     Route::get('/admin/admin-management', [AdminController::class, 'adminmanagement'])->name('superuser.admin');
     Route::post('/admin/usermanagement/new', [AdminController::class, 'newUser'])->name('user.new');
+    Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
     // Promote to Admin
     Route::patch('admin/user/promote/{id}', [UserController::class, 'promote'])->name('user.promote');
@@ -134,6 +136,7 @@ Route::middleware(['auth', 'superuser'])->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     // Admin Route
     Route::get('/admin/usermanagement', [AdminController::class, 'usermanagement'])->name('admin.user');
+    Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 });
 
 Route::middleware('auth:api')->group(function () {
@@ -141,7 +144,5 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/alats/search', [AlatApiController::class, 'searchAlatByName']);
     Route::post('/alats', [AlatApiController::class, 'createAlat']);
 });
-
-Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
 Route::get('/logout',[AuthController::class, 'logout'])->name('logout');
