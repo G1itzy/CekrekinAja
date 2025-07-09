@@ -12,7 +12,7 @@
         width: 100%; /* Tombol mengisi lebar yang tersedia dalam grup */
     }
 
-    /* Tombol dengan titik tiga vertikal (ellipsis) */
+    /* Tombol titik tiga vertikal (ellipsis) */
     .btn-ellipsis {
         background-color: transparent; /* Tanpa latar belakang */
         border: none;
@@ -26,8 +26,8 @@
     /* Membuat titik tiga vertikal */
     .btn-ellipsis span {
         display: block;
-        height: 5px;
-        width: 5px;
+        height: 6px;
+        width: 6px;
         margin: 3px 0;
         border-radius: 50%;
         background-color: #6c757d; /* Warna titik tiga */
@@ -44,13 +44,13 @@
     /* Dropdown Menu */
     .dropdown-menu {
         min-width: 220px;
-        padding: 10px;
+        padding: 8px;
         border-radius: 5px;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        font-size: 14px;
     }
 
     .dropdown-item {
-        font-size: 14px;
         padding: 8px 16px;
         border-radius: 5px;
     }
@@ -98,13 +98,13 @@
         width: 100%;
         border-collapse: collapse;
     }
-    
+
     table th, table td {
         padding: 12px;
         text-align: left;
         border-bottom: 1px solid #ddd;
     }
-    
+
     table th {
         background-color: #f8f9fa;
         font-weight: bold;
