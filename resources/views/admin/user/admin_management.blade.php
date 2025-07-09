@@ -56,15 +56,22 @@
         border-color: #e0a800;
     }
 
-    /* Tombol dengan beberapa tombol dalam satu baris (Button group) */
-    .btn-group {
-        display: flex;
-        flex-direction: column;  /* Menyusun tombol dalam satu kolom */
-        gap: 5px;  /* Memberikan sedikit ruang antar tombol */
-        justify-content: flex-start; /* Tombol tetap di kiri */
-        width: 100%;
+    /* Tombol dengan titik tiga (ellipsis) */
+    .btn-ellipsis {
+        background-color: #6c757d;
+        border-color: #6c757d;
     }
-    
+
+    .btn-ellipsis:hover {
+        background-color: #5a6268;
+        border-color: #5a6268;
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+        min-width: 200px;
+    }
+
     /* Styling untuk tabel */
     table {
         width: 100%;
@@ -135,25 +142,34 @@
                                 <td>{{ $item->telepon }}</td>
                                 <td>
                                     @if (Auth::user()->role == 2) <!-- Only Superadmin can see these buttons -->
-                                        <div class="btn-group">
-                                            <!-- Promote to Admin -->
-                                            <form action="{{ route('user.promote', ['id' => $item->id]) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-admin btn-sm btn-action">Jadikan Admin</button>
-                                            </form>
-                                            <!-- Promote to Superadmin -->
-                                            <form action="{{ route('user.promoteToSuperAdmin', ['id' => $item->id]) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="btn btn-superadmin btn-sm btn-action">Jadikan Superadmin</button>
-                                            </form>
-                                            <!-- Hapus User - Tombol terpisah di bawah tombol lainnya -->
-                                            <form action="{{ route('user.destroy', ['id' => $item->id]) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-delete btn-sm btn-action">Hapus User</button>
-                                            </form>
+                                        <div class="dropdown">
+                                            <!-- Tombol dengan titik tiga (ellipsis) -->
+                                            <button class="btn btn-ellipsis btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                                ...
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li>
+                                                    <form action="{{ route('user.promote', ['id' => $item->id]) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="dropdown-item btn btn-admin btn-sm">Jadikan Admin</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form action="{{ route('user.promoteToSuperAdmin', ['id' => $item->id]) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="dropdown-item btn btn-superadmin btn-sm">Jadikan Superadmin</button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form action="{{ route('user.destroy', ['id' => $item->id]) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item btn btn-delete btn-sm">Hapus User</button>
+                                                    </form>
+                                                </li>
+                                            </ul>
                                         </div>
                                     @endif
                                 </td>
