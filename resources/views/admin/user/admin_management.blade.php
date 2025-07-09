@@ -9,12 +9,12 @@
         text-align: center;
         border-radius: 5px;
         margin: 5px 0;
-        width: 100%; /* Tombol mengisi lebar yang tersedia dalam grup */
+        width: auto; /* Tombol menyesuaikan dengan ukuran teks */
     }
 
     /* Tombol titik tiga vertikal (ellipsis) */
     .btn-ellipsis {
-        background-color: transparent; /* Tanpa latar belakang */
+        background-color: transparent;
         border: none;
         color: #6c757d;
         font-size: 20px;
@@ -30,7 +30,7 @@
         width: 6px;
         margin: 3px 0;
         border-radius: 50%;
-        background-color: #6c757d; /* Warna titik tiga */
+        background-color: #6c757d; 
     }
 
     .btn-ellipsis:hover span {
@@ -138,6 +138,11 @@
             padding: 8px;
         }
     }
+
+    /* Add scrolling behavior for responsive table */
+    .table-responsive {
+        overflow-x: auto;
+    }
 </style>
 
 <div class="container-fluid px-4">
@@ -154,25 +159,27 @@
             <div class="card shadow">
                 <div class="card-header"><b>User</b></div>
                 <div class="card-body">
-                    <table id="dataTable" class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Telepon</th>
-                                <th>Tindakan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($user as $item)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->name }} <span class="badge bg-secondary">{{ $item->payment->count() }} Transaksi</span></td>
-                                <td>{{ $item->email }}</td>
-                                <td>{{ $item->telepon }}</td>
-                                <td class="action-column">
-                                    @if (Auth::user()->role == 2) <!-- Only Superadmin can see these buttons -->
+                    <!-- Added table-responsive here -->
+                    <div class="table-responsive">
+                        <table id="dataTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Telepon</th>
+                                    <th>Tindakan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($user as $item)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $item->name }} <span class="badge bg-secondary">{{ $item->payment->count() }} Transaksi</span></td>
+                                    <td>{{ $item->email }}</td>
+                                    <td>{{ $item->telepon }}</td>
+                                    <td class="action-column">
+                                        @if (Auth::user()->role == 2)
                                         <div class="dropdown">
                                             <!-- Tombol dengan titik tiga vertikal (ellipsis) -->
                                             <button class="btn btn-ellipsis btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -204,12 +211,13 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
