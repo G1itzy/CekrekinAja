@@ -12,7 +12,7 @@
         width: 100%; /* Tombol mengisi lebar yang tersedia dalam grup */
     }
 
-    /* Tombol dengan titik tiga (ellipsis) */
+    /* Tombol dengan titik tiga vertikal (ellipsis) */
     .btn-ellipsis {
         background-color: transparent; /* Tanpa latar belakang */
         border: none;
@@ -97,7 +97,12 @@
     table tbody tr:hover {
         background-color: #f1f1f1;
     }
-    
+
+    /* Posisi tombol ellipsis di sebelah kanan */
+    .action-column {
+        text-align: right;  /* Letakkan tombol di sebelah kanan */
+    }
+
     /* Modal styling */
     .modal-dialog {
         max-width: 600px;
@@ -150,12 +155,12 @@
                                 <td>{{ $item->name }} <span class="badge bg-secondary">{{ $item->payment->count() }} Transaksi</span></td>
                                 <td>{{ $item->email }}</td>
                                 <td>{{ $item->telepon }}</td>
-                                <td>
+                                <td class="action-column">
                                     @if (Auth::user()->role == 2) <!-- Only Superadmin can see these buttons -->
                                         <div class="dropdown">
-                                            <!-- Tombol dengan titik tiga (ellipsis) -->
+                                            <!-- Tombol dengan titik tiga vertikal (ellipsis) -->
                                             <button class="btn btn-ellipsis btn-sm" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                                ...
+                                                &#8230; <!-- Simbol titik tiga vertikal -->
                                             </button>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                 <li>
