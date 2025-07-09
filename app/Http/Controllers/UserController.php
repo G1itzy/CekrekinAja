@@ -137,13 +137,17 @@ class UserController extends Controller
     public function destroy($id)
     {
         try {
+            // Mencari user berdasarkan ID yang diberikan
             $user = User::findOrFail($id);
-            $user->delete();  // Menghapus user dari database
-            return redirect()->route('admin.user')->with('success', 'User berhasil dihapus');
+    
+            // Menghapus user dari database
+            $user->delete();
+    
+            // Redirect ke halaman admin management setelah berhasil menghapus user
+            return redirect()->route('superuser.admin')->with('success', 'User berhasil dihapus');
         } catch (\Exception $e) {
             // Menangani kesalahan jika terjadi
             return back()->with('error', 'Terjadi kesalahan saat menghapus user');
         }
     }
-
 }
