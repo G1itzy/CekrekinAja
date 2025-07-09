@@ -44,7 +44,18 @@
         background-color: #c82333;
         border-color: #c82333;
     }
+
+    /* Tombol untuk Hapus User */
+    .btn-delete {
+        background-color: #ffc107; /* Kuning untuk tombol Hapus */
+        border-color: #ffc107;
+    }
     
+    .btn-delete:hover {
+        background-color: #e0a800;
+        border-color: #e0a800;
+    }
+
     /* Tombol dengan beberapa tombol dalam satu baris (Button group) */
     .btn-group {
         display: flex;
@@ -135,6 +146,12 @@
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="btn btn-superadmin btn-sm btn-action">Jadikan Superadmin</button>
+                                            </form>
+                                            <!-- Hapus User -->
+                                            <form action="{{ route('user.destroy', ['id' => $item->id]) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-delete btn-sm btn-action">Hapus User</button>
                                             </form>
                                         </div>
                                     @endif
