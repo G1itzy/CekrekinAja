@@ -4,7 +4,7 @@
 <style>
     /* Tombol dengan ukuran konsisten */
     .btn-action {
-        width: 100%;
+        width: 48%;
         padding: 10px;
         text-align: center;
         font-size: 14px;
@@ -14,24 +14,24 @@
 
     /* Tombol untuk Superadmin */
     .btn-superadmin {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
+        background-color: #28a745; /* Warna hijau profesional */
+        border-color: #28a745;
     }
 
     .btn-superadmin:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
+        background-color: #218838;
+        border-color: #218838;
     }
 
     /* Tombol untuk Admin */
     .btn-admin {
-        background-color: #28a745;
-        border-color: #28a745;
+        background-color: #007bff; /* Warna biru gelap profesional */
+        border-color: #007bff;
     }
 
     .btn-admin:hover {
-        background-color: #218838;
-        border-color: #218838;
+        background-color: #0056b3;
+        border-color: #0056b3;
     }
 
     /* Tombol untuk menghapus Admin */
@@ -48,8 +48,9 @@
     /* Tombol dengan beberapa tombol dalam satu baris (Button group) */
     .btn-group {
         display: flex;
-        flex-wrap: wrap;
         gap: 10px;
+        justify-content: space-between;
+        width: 100%;
     }
 
     /* Styling untuk tabel */
